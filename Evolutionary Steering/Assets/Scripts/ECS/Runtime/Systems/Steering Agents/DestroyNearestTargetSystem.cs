@@ -25,7 +25,7 @@ public partial struct DestroyNearestTargetSystem : ISystem
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
         var translationLookup = SystemAPI.GetComponentLookup<Translation>(true);
-        var targetInRangeLookup = SystemAPI.GetComponentLookup<TargetInRangeTag>();
+        var targetInRangeLookup = SystemAPI.GetComponentLookup<TargetInRange>();
 
         state.Dependency = new DestroyNearestTargetJob
         {
@@ -44,7 +44,7 @@ public partial struct DestroyNearestTargetSystem : ISystem
         public ComponentLookup<Translation> translationLookup;
 
         [NativeDisableParallelForRestriction]
-        public ComponentLookup<TargetInRangeTag> targetInRangeLookup;
+        public ComponentLookup<TargetInRange> targetInRangeLookup;
 
         public EntityCommandBuffer.ParallelWriter ecb;
 
@@ -62,7 +62,7 @@ public partial struct DestroyNearestTargetSystem : ISystem
                 if (dist < 1)
                 {
                     targetInRangeLookup.SetComponentEnabled(e, true);
-                    targetInRangeLookup[e] = new TargetInRangeTag
+                    targetInRangeLookup[e] = new TargetInRange
                     {
                         targetType = (TargetTypeEnum)i 
                     };

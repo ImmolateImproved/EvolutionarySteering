@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class OutOfBoundSteeringAuthoring : MonoBehaviour
 {
-    public Vector3 center;
-    public float radius;
-
+    public Bounds bounds;
     public float steeringForce;
-
-    private void OnDrawGizmosSelected()
-    {
-        Handles.DrawWireDisc(transform.position, Vector3.back, radius, 1);
-    }
 
     class OutOfBoundSteerinBaker : Baker<OutOfBoundSteeringAuthoring>
     {
@@ -20,8 +13,7 @@ public class OutOfBoundSteeringAuthoring : MonoBehaviour
         {
             AddComponent(new OutOfBoundSteering
             {
-                center = authoring.center,
-                radiusSq = Mathf.Pow(authoring.radius, 2),
+                squareBounds = authoring.bounds,
                 steeringForce = authoring.steeringForce
 
             });

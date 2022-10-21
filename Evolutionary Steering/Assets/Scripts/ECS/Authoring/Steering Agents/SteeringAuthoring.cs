@@ -10,7 +10,6 @@ public struct SteeringAgentData
     public float maxForce;
 
     public float predictionAmount;
-    public float slowRadius;
 
     public float searchRadius;
     public PhysicsCategoryTags targetLayer;
@@ -26,7 +25,7 @@ public class SteeringAuthoring : MonoBehaviour
     {
         public override void Bake(SteeringAuthoring authoring)
         {
-            AddComponent(new TargetInRangeTag());
+            AddComponent(new TargetInRange());
             var seekerDatas = AddBuffer<TargetSeeker>();
 
             var steeringDatas = AddBuffer<SteeringData>();
@@ -39,7 +38,6 @@ public class SteeringAuthoring : MonoBehaviour
                 {
                     maxForce = steeringData.maxForce,
                     predictionAmount = steeringData.predictionAmount,
-                    slowRadiusSq = steeringData.slowRadius * steeringData.slowRadius,
                     attractionForce = steeringData.attractionForce
                 });
 

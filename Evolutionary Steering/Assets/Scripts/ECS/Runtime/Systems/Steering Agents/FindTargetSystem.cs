@@ -36,22 +36,21 @@ public partial struct FindTargetSystem : ISystem
             targetTypes = targetTypes
 
         }.ScheduleParallel(state.Dependency);
-
-        targetEntities.Dispose(state.Dependency);
-        targetPositions.Dispose(state.Dependency);
-        targetTypes.Dispose(state.Dependency);
     }
 
     [BurstCompile]
     partial struct FindTargetJob : IJobEntity
     {
         [ReadOnly]
+        [DeallocateOnJobCompletion]
         public NativeArray<Entity> targetEntities;
 
         [ReadOnly]
+        [DeallocateOnJobCompletion]
         public NativeArray<Translation> targetPositions;
 
         [ReadOnly]
+        [DeallocateOnJobCompletion]
         public NativeArray<TargetType> targetTypes;
 
         public void Execute(in TransformAspect transform, ref DynamicBuffer<TargetSeeker> seekerBuffer)

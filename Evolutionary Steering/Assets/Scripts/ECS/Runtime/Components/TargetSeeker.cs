@@ -20,7 +20,7 @@ public struct TargetType : IComponentData
     public TargetTypeEnum value;
 }
 
-public struct TargetInRangeTag : IComponentData, IEnableableComponent
+public struct TargetInRange : IComponentData, IEnableableComponent
 {
     public TargetTypeEnum targetType;   
 }

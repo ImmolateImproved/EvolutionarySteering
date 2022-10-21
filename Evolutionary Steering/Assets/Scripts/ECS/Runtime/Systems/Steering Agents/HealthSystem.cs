@@ -29,7 +29,7 @@ public partial struct HealthSystem : ISystem
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
-        var targetInRangeLookup = SystemAPI.GetComponentLookup<TargetInRangeTag>();
+        var targetInRangeLookup = SystemAPI.GetComponentLookup<TargetInRange>();
 
         var colorLookup = SystemAPI.GetComponentLookup<URPMaterialPropertyBaseColor>();
 
@@ -46,11 +46,11 @@ public partial struct HealthSystem : ISystem
 
         }.ScheduleParallel();
 
-        new HealthViewJob
-        {
-            colorLookup = colorLookup
+        //new HealthViewJob
+        //{
+        //    colorLookup = colorLookup
 
-        }.ScheduleParallel();
+        //}.ScheduleParallel();
     }
 
     [BurstCompile]
@@ -75,9 +75,9 @@ public partial struct HealthSystem : ISystem
     partial struct TargetInDistanceJob : IJobEntity
     {
         [NativeDisableContainerSafetyRestriction]
-        public ComponentLookup<TargetInRangeTag> targetInRangeTag;
+        public ComponentLookup<TargetInRange> targetInRangeTag;
 
-        public void Execute(Entity e, ref Health health, ref TargetInRangeTag targetInRange)
+        public void Execute(Entity e, ref Health health, ref TargetInRange targetInRange)
         {
             if (targetInRange.targetType == TargetTypeEnum.Food)
             {

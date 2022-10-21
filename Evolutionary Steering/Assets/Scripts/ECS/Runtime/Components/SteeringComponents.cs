@@ -7,7 +7,6 @@ public struct SteeringData : IBufferElementData
     public float attractionForce;
     public float maxForce;
     public float predictionAmount;
-    public float slowRadiusSq;
 }
 
 public readonly partial struct SteeringAgentAspect : IAspect
@@ -15,19 +14,13 @@ public readonly partial struct SteeringAgentAspect : IAspect
     readonly PhysicsBodyAspect physicsBodyAspect;
     readonly RefRO<Translation> translation;
 
+    public float3 Position => translation.ValueRO.Value;
+
     public void Steer(in SteeringData steeringData, float3 targetPosition)
     {
         var force = targetPosition - translation.ValueRO.Value;
 
-        var distance = math.lengthsq(force);
-
-        var maxSpeed = physicsBodyAspect.MaxSpeed;
-
-        var desiredSpeed = distance < steeringData.slowRadiusSq
-           ? math.remap(steeringData.slowRadiusSq, 0, maxSpeed, 0, distance)
-           : maxSpeed;
-
-        force = MathUtils.SetMagnitude(force, desiredSpeed);
+        force = MathUtils.SetMagnitude(force, physicsBodyAspect.MaxSpeed);
 
         force -= physicsBodyAspect.Velocity;
 

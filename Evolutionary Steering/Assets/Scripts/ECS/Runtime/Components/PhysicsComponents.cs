@@ -2,15 +2,15 @@
 using Unity.Mathematics;
 using Unity.Transforms;
 
+public struct ResultantForce : IComponentData
+{
+    public float3 value;
+}
+
 public struct PhysicsData : IComponentData
 {
     public float3 velocity;
     public float maxSpeed;
-}
-
-public struct ResultantForce : IComponentData
-{
-    public float3 value;
 }
 
 public readonly partial struct PhysicsBodyAspect : IAspect
@@ -34,11 +34,6 @@ public readonly partial struct PhysicsBodyAspect : IAspect
     {
         get => physicsData.ValueRO.maxSpeed;
         set => physicsData.ValueRW.maxSpeed = value;
-    }
-
-    public PhysicsData PhysicsData
-    {
-        get => physicsData.ValueRO;
     }
 
     public void ApplyForce(ref Translation translation, float deltaTime)

@@ -7,16 +7,9 @@ public struct MousePosition : IComponentData
     public float2 value;
 }
 
-public struct SquareWorldBounds : IComponentData
-{
-    public float2 value;
-}
-
 public struct OutOfBoundSteering : IComponentData
 {
-    public float3 center;
-    public float radiusSq;
-
+    public Bounds squareBounds;
     public float steeringForce;
 }
 

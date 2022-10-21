@@ -1,7 +1,9 @@
 ﻿using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 [BurstCompile]
 [UpdateBefore(typeof(ApplyForceSystem))]
@@ -23,31 +25,31 @@ public partial struct OutOfBoundsSteeringSystem : ISystem
     {
         var outOfBoundSteeringData = SystemAPI.GetSingleton<OutOfBoundSteering>();
 
-        new OutOfBoundsForceJob
+        new SquareBoundsJob
         {
-            outOfBoundSteeringData = outOfBoundSteeringData
+            outOfBoundData = outOfBoundSteeringData
 
         }.ScheduleParallel();
+
     }
 
     [BurstCompile]
-    partial struct OutOfBoundsForceJob : IJobEntity
+    partial struct SquareBoundsJob : IJobEntity
     {
-        public OutOfBoundSteering outOfBoundSteeringData;
+        public OutOfBoundSteering outOfBoundData;
 
-        public void Execute(SteeringAgentAspect steeringAgentAspect, in Translation translation)
+        public void Execute(SteeringAgentAspect steeringAgentAspect)
         {
-            if (math.distancesq(translation.Value, outOfBoundSteeringData.center) > outOfBoundSteeringData.radiusSq)
+            if (!outOfBoundData.squareBounds.Contains(steeringAgentAspect.Position))
             {
                 var steeringData = new SteeringData
                 {
                     attractionForce = 1,
-                    maxForce = outOfBoundSteeringData.steeringForce
+                    maxForce = outOfBoundData.steeringForce
                 };
 
-                steeringAgentAspect.Steer(steeringData, outOfBoundSteeringData.center);
+                steeringAgentAspect.Steer(steeringData, outOfBoundData.squareBounds.center);
             }
-
         }
     }
 }
