@@ -6,20 +6,23 @@ using UnityEngine;
 public struct SteeringAgentData
 {
     public GameObject target;
+
     public float attractionForce;
-    public float maxForce;
-
-    public float predictionAmount;
-
+    public float hungerAttractionBonus;
     public float searchRadius;
+
     public PhysicsCategoryTags targetLayer;
 }
 
 public class SteeringAuthoring : MonoBehaviour
 {
-    public SteeringAgentData[] seekerDatas;
+    public float maxForce;
+
+    public float predictionAmount;
 
     public PhysicsCategoryTags belongsTo;
+
+    public SteeringAgentData[] seekerDatas;
 
     class SteeringBaker : Baker<SteeringAuthoring>
     {
@@ -27,28 +30,30 @@ public class SteeringAuthoring : MonoBehaviour
         {
             AddComponent(new TargetInRange());
 
+            AddComponent(new SteeringAgent
+            {
+                maxForce = authoring.maxForce,
+                predictionAmount = authoring.predictionAmount
+
+            });
+
             var seekerDatas = AddBuffer<TargetSeeker>();
-            var steeringDatas = AddBuffer<SteeringData>();
 
             for (int i = 0; i < authoring.seekerDatas.Length; i++)
             {
                 var steeringData = authoring.seekerDatas[i];
 
-                steeringDatas.Add(new SteeringData
-                {
-                    maxForce = steeringData.maxForce,
-                    predictionAmount = steeringData.predictionAmount,
-                    attractionForce = steeringData.attractionForce
-                });
-
                 seekerDatas.Add(new TargetSeeker
                 {
                     target = GetEntity(steeringData.target),
-                    searchRadius = authoring.seekerDatas[i].searchRadius,
+                    attractionForce = steeringData.attractionForce,
+                    hungerAttractionBonus = steeringData.hungerAttractionBonus,
+                    searchRadius = steeringData.searchRadius,
+
                     layers = new Unity.Physics.CollisionFilter
                     {
                         BelongsTo = authoring.belongsTo.Value,
-                        CollidesWith = authoring.seekerDatas[i].targetLayer.Value
+                        CollidesWith = steeringData.targetLayer.Value
                     }
                 });
             }

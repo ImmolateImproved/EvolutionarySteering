@@ -43,25 +43,25 @@ public partial struct HealthSystem : ISystem
 
         }.ScheduleParallel();
 
-        //new HealthViewJob
-        //{
-        //    colorLookup = colorLookup
+        new HealthViewJob
+        {
+            colorLookup = colorLookup
 
-        //}.ScheduleParallel();
+        }.ScheduleParallel();
     }
 
     [BurstCompile]
     partial struct TargetInDistanceJob : IJobEntity
     {
-        public void Execute(Entity e, ref Health health, ref TargetInRange targetInRange)
+        public void Execute(ref Health health, ref TargetInRange targetInRange)
         {
             if (targetInRange.targetType == TargetTypeEnum.Food)
             {
-                health.current += health.hpPerKill;
+                health.current += health.hpPerFood;
             }
             else if (targetInRange.targetType == TargetTypeEnum.Poison)
             {
-                health.current = 0;
+                health.current -= health.hpPerPoison;
             }
 
             health.current = math.clamp(health.current, 0, health.max);
@@ -96,29 +96,9 @@ public partial struct HealthSystem : ISystem
         {
             for (int i = 0; i < children.Length; i++)
             {
-                var color = (Vector4)Color.Lerp(Color.red, health.fullHpColor, health.current / health.max);
+                var color = (Vector4)Color.Lerp(Color.black, health.fullHpColor, health.current / health.max);
                 colorLookup[children[i].Value] = new URPMaterialPropertyBaseColor { Value = color };
             }
         }
-    }
-}
-
-[BurstCompile]
-public partial struct FoodSpawnerSystem : ISystem
-{
-    public void OnCreate(ref SystemState state)
-    {
-
-    }
-
-    public void OnDestroy(ref SystemState state)
-    {
-
-    }
-
-    [BurstCompile]
-    public void OnUpdate(ref SystemState state)
-    {
-
     }
 }

@@ -34,19 +34,9 @@ public partial struct ReproductionSystem : ISystem
     {
         public EntityCommandBuffer.ParallelWriter ecb;
 
-        public void Execute([ChunkIndexInQuery] int chunkIndex, ReproductionAspect reproductionAspect, ref ReproductionData reproductionData, in TargetInRange targetInRange)
+        public void Execute([ChunkIndexInQuery] int chunkIndex, ReproductionAspect reproductionAspect)
         {
-            if (targetInRange.targetType == TargetTypeEnum.Food)
-            {
-                reproductionData.currentFood++;
-
-                if (reproductionData.currentFood >= reproductionData.foodToReproduce)
-                {
-                    reproductionData.currentFood = 0;
-
-                    reproductionAspect.Reproduce(ref ecb, chunkIndex, reproductionData.seekerPrefab);
-                }
-            }
+            reproductionAspect.ReproduceAndMutate(ref ecb, chunkIndex);
         }
     }
 }

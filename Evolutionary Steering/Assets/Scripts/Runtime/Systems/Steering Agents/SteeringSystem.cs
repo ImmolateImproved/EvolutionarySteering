@@ -43,7 +43,7 @@ public partial struct SteeringSystem : ISystem
         [ReadOnly]
         public ComponentLookup<Rotation> targetRotations;
 
-        public void Execute(SteeringAgentAspect steeringAgent, in DynamicBuffer<TargetSeeker> seeker, in DynamicBuffer<SteeringData> steeringDatas)
+        public void Execute(SteeringAgentAspect steeringAspect, in Health health, in DynamicBuffer<TargetSeeker> seeker)
         {
             var seekerArray = seeker.AsNativeArray();
 
@@ -57,7 +57,11 @@ public partial struct SteeringSystem : ISystem
                 var targetDirection = math.mul(targetRotations[seekerData.target].Value, new float3(1, 0, 0));
                 var targetPos = targetTranslations[seekerData.target].Value;
 
-                steeringAgent.SteerAhead(steeringDatas[i], targetPos, targetDirection);
+                var missingHpFraction = 1f - (health.current / health.max);
+
+                var attractionForce = seekerData.attractionForce + (missingHpFraction * seekerData.hungerAttractionBonus);
+
+                steeringAspect.SteerAhead(attractionForce, targetPos, targetDirection);
             }
         }
     }

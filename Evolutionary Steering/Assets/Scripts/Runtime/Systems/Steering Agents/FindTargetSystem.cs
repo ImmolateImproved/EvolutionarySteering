@@ -28,11 +28,14 @@ public partial struct FindTargetSystem : ISystem
         var targetPositions = targetsQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
         var targetTypes = targetsQuery.ToComponentDataArray<TargetType>(Allocator.TempJob);
 
+        var dt = SystemAPI.Time.DeltaTime;
+
         state.Dependency = new FindTargetJob
         {
             targetEntities = targetEntities,
             targetPositions = targetPositions,
-            targetTypes = targetTypes
+            targetTypes = targetTypes,
+            dt = dt
 
         }.ScheduleParallel(state.Dependency);
     }
@@ -51,6 +54,8 @@ public partial struct FindTargetSystem : ISystem
         [ReadOnly]
         [DeallocateOnJobCompletion]
         public NativeArray<TargetType> targetTypes;
+
+        public float dt;
 
         public void Execute(in TransformAspect transform, ref DynamicBuffer<TargetSeeker> seekerBuffer)
         {
@@ -79,7 +84,13 @@ public partial struct FindTargetSystem : ISystem
 
             for (int i = 0; i < seekerBuffer.Length; i++)
             {
-                seekerBuffer.ElementAt(i).target = newTargetEntity[i];
+                ref var seeker = ref seekerBuffer.ElementAt(i);
+
+                seeker.seekTimer += dt;
+                if (seeker.seekTimer >= seeker.timeBeforeSeek)
+                {
+                    seeker.target = newTargetEntity[i];
+                }
             }
         }
     }

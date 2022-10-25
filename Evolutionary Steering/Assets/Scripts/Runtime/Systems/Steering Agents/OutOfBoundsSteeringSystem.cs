@@ -42,13 +42,7 @@ public partial struct OutOfBoundsSteeringSystem : ISystem
         {
             if (!outOfBoundData.squareBounds.Contains(steeringAgentAspect.Position))
             {
-                var steeringData = new SteeringData
-                {
-                    attractionForce = 1,
-                    maxForce = outOfBoundData.steeringForce
-                };
-
-                steeringAgentAspect.Steer(steeringData, outOfBoundData.squareBounds.center);
+                steeringAgentAspect.Steer(outOfBoundData.steeringForce, outOfBoundData.squareBounds.center);
             }
         }
     }

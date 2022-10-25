@@ -35,11 +35,11 @@ public class SpawnerAuthoring : MonoBehaviour
     {
         public override void Bake(SpawnerAuthoring authoring)
         {
-            var random = new Unity.Mathematics.Random((uint)System.DateTime.Now.Millisecond);
+            var random = new Unity.Mathematics.Random((uint)(System.DateTime.Now.Millisecond + authoring.GetInstanceID()));
 
-            if (authoring.timeBetweenSpawns >0)
+            if (authoring.timeBetweenSpawns > 0)
             {
-                AddComponent(new Timer
+                AddComponent(new SpawnTimer
                 {
                     max = authoring.timeBetweenSpawns
 
@@ -50,7 +50,7 @@ public class SpawnerAuthoring : MonoBehaviour
             {
                 case SpawnerTypeEnum.Square:
                     {
-                        AddComponent(new GridSpawner
+                        AddComponent(new GridPositionFabric
                         {
                             minPosition = authoring.minPosition,
                             maxPosition = authoring.maxPosition,
@@ -62,7 +62,7 @@ public class SpawnerAuthoring : MonoBehaviour
                     }
                 case SpawnerTypeEnum.Circle:
                     {
-                        AddComponent(new CircularSpawner
+                        AddComponent(new CircularPositionFabric
                         {
                             center = authoring.offset,
                             maxRadius = authoring.maxRadius,

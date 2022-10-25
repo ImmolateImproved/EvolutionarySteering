@@ -4,7 +4,8 @@ using UnityEngine;
 public class HealthAuthoring : MonoBehaviour
 {
     public float health;
-    public float hpPerKill;
+    public float hpPerFood;
+    public float hpPerPoison;
     public float hpDecreasePerSeconds;
     public Color fullHpColor;
 
@@ -16,7 +17,8 @@ public class HealthAuthoring : MonoBehaviour
             {
                 max = authoring.health,
                 current = authoring.health,
-                hpPerKill = authoring.hpPerKill,
+                hpPerFood = authoring.hpPerFood,
+                hpPerPoison = authoring.hpPerPoison,
                 decreasePerSeconds = authoring.hpDecreasePerSeconds,
                 fullHpColor = authoring.fullHpColor
             });

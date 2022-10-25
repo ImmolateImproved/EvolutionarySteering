@@ -18,14 +18,9 @@ public struct Health : IComponentData
 {
     public float max;
     public float current;
-    public float hpPerKill;
+    public float hpPerFood;
+    public float hpPerPoison;
     public float decreasePerSeconds;
 
     public Color fullHpColor;
-}
-
-public struct Timer : IComponentData
-{
-    public float max;
-    public float current;
 }

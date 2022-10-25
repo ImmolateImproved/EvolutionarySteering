@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 3342897079533150817}
   - component: {fileID: 324912526}
   m_Layer: 0
-  m_Name: Seeker
+  m_Name: Seeker 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,7 +139,7 @@ Transform:
   m_Children:
   - {fileID: 8297134827138109545}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8849144262189336015
 MonoBehaviour:
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f9bc0a1b7bbf14d9e490c05d34839e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxForce: 1
+  maxForce: 2
   predictionAmount: 0
   belongsTo:
     Category00: 1
@@ -204,9 +204,9 @@ MonoBehaviour:
     Category31: 0
   seekerDatas:
   - target: {fileID: 0}
-    attractionForce: 1
+    attractionForce: 2
     hungerAttractionBonus: 0.8
-    searchRadius: 25
+    searchRadius: 15
     targetLayer:
       Category00: 0
       Category01: 1
@@ -241,9 +241,9 @@ MonoBehaviour:
       Category30: 0
       Category31: 0
   - target: {fileID: 0}
-    attractionForce: -1.2
+    attractionForce: -2
     hungerAttractionBonus: 0
-    searchRadius: 4
+    searchRadius: 15
     targetLayer:
       Category00: 0
       Category01: 0
@@ -308,7 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 7203946102823030174}
   foodToReproduce: 15
-  attractionFroce: 0.1
+  attractionFroce: 0
   maxSpeed: 0.5
   maxFroce: 0.1
-  targetSearchRadius: 0.1
+  targetSearchRadius: 0

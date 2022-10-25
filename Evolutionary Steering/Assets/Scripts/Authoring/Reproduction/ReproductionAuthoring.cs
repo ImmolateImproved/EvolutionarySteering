@@ -7,10 +7,9 @@ public class ReproductionAuthoring : MonoBehaviour
     public int foodToReproduce;
 
     public float attractionFroce;
-    public float repultionFroce;
+    public float maxSpeed;
     public float maxFroce;
-    public float foodSearchRadius;
-    public float poisonSearchRadius;
+    public float targetSearchRadius;
 
     class ReproductionBaker : Baker<ReproductionAuthoring>
     {
@@ -20,16 +19,14 @@ public class ReproductionAuthoring : MonoBehaviour
             {
                 seekerPrefab = GetEntity(authoring.prefab),
                 foodToReproduce = authoring.foodToReproduce
-
             });
 
             AddComponent(new MutationData
             {
                 attractionFroce = authoring.attractionFroce,
-                repultionFroce = authoring.repultionFroce,
-                foodSearchRadius = authoring.foodSearchRadius,
-                poisonSearchRadius = authoring.poisonSearchRadius,
+                targetSearchRadius = authoring.targetSearchRadius,
                 maxFroce = authoring.maxFroce,
+                maxSpeed = authoring.maxSpeed,
                 random = new Unity.Mathematics.Random((uint)System.DateTime.Now.Millisecond)
             });
         }

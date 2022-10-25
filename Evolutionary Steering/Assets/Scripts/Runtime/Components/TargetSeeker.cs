@@ -5,7 +5,13 @@ public struct TargetSeeker : IBufferElementData
 {
     public Entity target;
 
+    public float attractionForce;
+    public float hungerAttractionBonus;
+
     public float searchRadius;
+
+    public float seekTimer;
+    public float timeBeforeSeek;
 
     public CollisionFilter layers;
 }
