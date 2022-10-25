@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 8849144262189336015}
   - component: {fileID: 7288601601563712008}
   - component: {fileID: 3342897079533150817}
+  - component: {fileID: 324912526}
   m_Layer: 0
   m_Name: Seeker
   m_TagString: Untagged
@@ -149,7 +150,6 @@ MonoBehaviour:
     attractionForce: 1
     maxForce: 0.9
     predictionAmount: 0
-    slowRadius: 0
     searchRadius: 25
     targetLayer:
       Category00: 0
@@ -188,7 +188,6 @@ MonoBehaviour:
     attractionForce: -1
     maxForce: 1
     predictionAmount: 0
-    slowRadius: 0
     searchRadius: 4
     targetLayer:
       Category00: 0
@@ -270,5 +269,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   hpPerKill: 25
-  hpDecreasePerSeconds: 0
+  hpDecreasePerSeconds: 5
   fullHpColor: {r: 0, g: 1, b: 0.12270379, a: 1}
+--- !u!114 &324912526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7203946102823030174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a70d2eec4779104eb960ea57270c2ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 7203946102823030174}
+  foodToReproduce: 15
+  attractionFroce: 0.01
+  repultionFroce: 0.01
+  maxFroce: 0.01
+  foodSearchRadius: 0.01
+  poisonSearchRadius: 0.01

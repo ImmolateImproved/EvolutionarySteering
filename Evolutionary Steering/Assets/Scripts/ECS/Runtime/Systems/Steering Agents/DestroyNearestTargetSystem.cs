@@ -50,6 +50,8 @@ public partial struct DestroyNearestTargetSystem : ISystem
 
         public void Execute(Entity e, [ChunkIndexInQuery] int chunkIndex, in Translation translation, in DynamicBuffer<TargetSeeker> targetSeeker)
         {
+            targetInRangeLookup.SetComponentEnabled(e, false);
+
             for (int i = 0; i < targetSeeker.Length; i++)
             {
                 var target = targetSeeker[i].target;
@@ -64,7 +66,7 @@ public partial struct DestroyNearestTargetSystem : ISystem
                     targetInRangeLookup.SetComponentEnabled(e, true);
                     targetInRangeLookup[e] = new TargetInRange
                     {
-                        targetType = (TargetTypeEnum)i 
+                        targetType = (TargetTypeEnum)i
                     };
 
                     ecb.DestroyEntity(chunkIndex, target);

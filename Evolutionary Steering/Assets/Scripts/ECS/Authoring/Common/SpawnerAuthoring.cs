@@ -29,11 +29,22 @@ public class SpawnerAuthoring : MonoBehaviour
 
     public SpawnRequestData[] spawnRequests;
 
+    public float timeBetweenSpawns;
+
     class GridSpawnerBaker : Baker<SpawnerAuthoring>
     {
         public override void Bake(SpawnerAuthoring authoring)
         {
             var random = new Unity.Mathematics.Random((uint)System.DateTime.Now.Millisecond);
+
+            if (authoring.timeBetweenSpawns >0)
+            {
+                AddComponent(new Timer
+                {
+                    max = authoring.timeBetweenSpawns
+
+                });
+            }
 
             switch (authoring.spawnerType)
             {
@@ -68,7 +79,7 @@ public class SpawnerAuthoring : MonoBehaviour
                 requests.Add(new SpawnRequest
                 {
                     count = authoring.spawnRequests[i].count,
-                    prefab = GetEntity(authoring.spawnRequests[i].prefab)
+                    prefab = GetEntity(authoring.spawnRequests[i].prefab),
                 });
             }
         }

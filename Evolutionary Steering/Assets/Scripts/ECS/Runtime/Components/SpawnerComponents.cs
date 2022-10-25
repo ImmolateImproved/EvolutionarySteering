@@ -59,8 +59,6 @@ public readonly partial struct SpawnerAspect : IAspect
         {
             Spawn(ref state, ref spawner, i);
         }
-
-        Clear();
     }
 
     public NativeArray<Entity> Spawn<T>(ref SystemState state, ref T spawner, int spawnRequestIndex) where T : ISpawner

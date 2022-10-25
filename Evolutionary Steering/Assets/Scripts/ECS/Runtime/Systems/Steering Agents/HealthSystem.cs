@@ -29,13 +29,10 @@ public partial struct HealthSystem : ISystem
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
-        var targetInRangeLookup = SystemAPI.GetComponentLookup<TargetInRange>();
-
         var colorLookup = SystemAPI.GetComponentLookup<URPMaterialPropertyBaseColor>();
 
         new TargetInDistanceJob
         {
-            targetInRangeTag = targetInRangeLookup
 
         }.ScheduleParallel();
 
@@ -51,6 +48,24 @@ public partial struct HealthSystem : ISystem
         //    colorLookup = colorLookup
 
         //}.ScheduleParallel();
+    }
+
+    [BurstCompile]
+    partial struct TargetInDistanceJob : IJobEntity
+    {
+        public void Execute(Entity e, ref Health health, ref TargetInRange targetInRange)
+        {
+            if (targetInRange.targetType == TargetTypeEnum.Food)
+            {
+                health.current += health.hpPerKill;
+            }
+            else if (targetInRange.targetType == TargetTypeEnum.Poison)
+            {
+                health.current = 0;
+            }
+
+            health.current = math.clamp(health.current, 0, health.max);
+        }
     }
 
     [BurstCompile]
@@ -72,29 +87,6 @@ public partial struct HealthSystem : ISystem
     }
 
     [BurstCompile]
-    partial struct TargetInDistanceJob : IJobEntity
-    {
-        [NativeDisableContainerSafetyRestriction]
-        public ComponentLookup<TargetInRange> targetInRangeTag;
-
-        public void Execute(Entity e, ref Health health, ref TargetInRange targetInRange)
-        {
-            if (targetInRange.targetType == TargetTypeEnum.Food)
-            {
-                health.current += health.hpPerKill;
-            }
-            else if (targetInRange.targetType == TargetTypeEnum.Poison)
-            {
-                health.current = 0;
-            }
-
-            health.current = math.clamp(health.current, 0, health.max);
-
-            targetInRangeTag.SetComponentEnabled(e, false);
-        }
-    }
-
-    [BurstCompile]
     partial struct HealthViewJob : IJobEntity
     {
         [NativeDisableParallelForRestriction]
@@ -108,5 +100,25 @@ public partial struct HealthSystem : ISystem
                 colorLookup[children[i].Value] = new URPMaterialPropertyBaseColor { Value = color };
             }
         }
+    }
+}
+
+[BurstCompile]
+public partial struct FoodSpawnerSystem : ISystem
+{
+    public void OnCreate(ref SystemState state)
+    {
+
+    }
+
+    public void OnDestroy(ref SystemState state)
+    {
+
+    }
+
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
+    {
+
     }
 }

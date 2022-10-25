@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -21,4 +22,10 @@ public struct Health : IComponentData
     public float decreasePerSeconds;
 
     public Color fullHpColor;
+}
+
+public struct Timer : IComponentData
+{
+    public float max;
+    public float current;
 }

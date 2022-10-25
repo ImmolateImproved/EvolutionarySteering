@@ -9,7 +9,6 @@ using Unity.Transforms;
 [UpdateBefore(typeof(SteeringSystem))]
 public partial struct FindTargetSystem : ISystem
 {
-    [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
 

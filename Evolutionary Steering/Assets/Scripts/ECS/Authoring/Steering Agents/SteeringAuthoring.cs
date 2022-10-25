@@ -26,8 +26,8 @@ public class SteeringAuthoring : MonoBehaviour
         public override void Bake(SteeringAuthoring authoring)
         {
             AddComponent(new TargetInRange());
-            var seekerDatas = AddBuffer<TargetSeeker>();
 
+            var seekerDatas = AddBuffer<TargetSeeker>();
             var steeringDatas = AddBuffer<SteeringData>();
 
             for (int i = 0; i < authoring.seekerDatas.Length; i++)
