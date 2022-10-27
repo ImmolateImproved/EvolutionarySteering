@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f9bc0a1b7bbf14d9e490c05d34839e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxForce: 1
+  maxForce: 0.5
   predictionAmount: 0
   belongsTo:
     Category00: 1

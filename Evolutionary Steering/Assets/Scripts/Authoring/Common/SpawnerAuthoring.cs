@@ -8,24 +8,9 @@ public struct SpawnRequestData
     public int count;
 }
 
-public enum SpawnerTypeEnum
-{
-    Square, Circle
-}
-
 public class SpawnerAuthoring : MonoBehaviour
 {
-    public SpawnerTypeEnum spawnerType;
-
-    [Header("Square spawner settings")]
-    public Vector3 minPosition;
-    public Vector3 maxPosition;
-
-    [Header("Circular spawner settings")]
-    public float maxRadius;
-
-    [Header("Common spawner settings")]
-    public Vector3 offset;
+    public PositionFactoryData positionFactory;
 
     public SpawnRequestData[] spawnRequests;
 
@@ -35,7 +20,11 @@ public class SpawnerAuthoring : MonoBehaviour
     {
         public override void Bake(SpawnerAuthoring authoring)
         {
+            DependsOn(authoring.positionFactory);
+
             var random = new Unity.Mathematics.Random((uint)(System.DateTime.Now.Millisecond + authoring.GetInstanceID()));
+
+            var positionFactory = authoring.positionFactory;
 
             if (authoring.timeBetweenSpawns > 0)
             {
@@ -46,26 +35,26 @@ public class SpawnerAuthoring : MonoBehaviour
                 });
             }
 
-            switch (authoring.spawnerType)
+            switch (positionFactory.factoryType)
             {
-                case SpawnerTypeEnum.Square:
+                case PositionFactoryEnum.Square:
                     {
-                        AddComponent(new GridPositionFabric
+                        AddComponent(new GridPositionFactory
                         {
-                            minPosition = authoring.minPosition,
-                            maxPosition = authoring.maxPosition,
-                            offset = authoring.offset,
+                            maxPosition = positionFactory.bounds,
+                            minPosition = -positionFactory.bounds,
+                            offset = positionFactory.offset,
                             random = random
                         });
 
                         break;
                     }
-                case SpawnerTypeEnum.Circle:
+                case PositionFactoryEnum.Circle:
                     {
-                        AddComponent(new CircularPositionFabric
+                        AddComponent(new CircularPositionFactory
                         {
-                            center = authoring.offset,
-                            maxRadius = authoring.maxRadius,
+                            center = positionFactory.offset,
+                            maxRadius = positionFactory.maxRadius,
                             random = random
                         });
                         break;

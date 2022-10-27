@@ -4,12 +4,12 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-public interface IPositionFabric
+public interface IPositionFactory
 {
     float3 GetNextSpawnPosition();
 }
 
-public struct GridPositionFabric : IComponentData, IPositionFabric
+public struct GridPositionFactory : IComponentData, IPositionFactory
 {
     public float3 minPosition;
     public float3 maxPosition;
@@ -23,7 +23,7 @@ public struct GridPositionFabric : IComponentData, IPositionFabric
     }
 }
 
-public struct CircularPositionFabric : IComponentData, IPositionFabric
+public struct CircularPositionFactory : IComponentData, IPositionFactory
 {
     public float3 center;
     public float maxRadius;
@@ -59,7 +59,7 @@ public readonly partial struct SpawnerAspect : IAspect
 
     public int SpawnRequestCount => spawnRequestBuffer.Length;
 
-    public void Spawn<T>(ref SystemState systemState, ref T spawner) where T : IPositionFabric
+    public void Spawn<T>(ref SystemState systemState, ref T spawner) where T : IPositionFactory
     {
         for (int i = 0; i < SpawnRequestCount; i++)
         {
@@ -67,7 +67,7 @@ public readonly partial struct SpawnerAspect : IAspect
         }
     }
 
-    public NativeArray<Entity> Spawn<T>(ref SystemState systemState, ref T positionFabric, int spawnRequestIndex) where T : IPositionFabric
+    public NativeArray<Entity> Spawn<T>(ref SystemState systemState, ref T positionFactory, int spawnRequestIndex) where T : IPositionFactory
     {
         var spawnRequest = spawnRequestBuffer[spawnRequestIndex];
 
@@ -75,7 +75,7 @@ public readonly partial struct SpawnerAspect : IAspect
 
         for (int i = 0; i < entities.Length; i++)
         {
-            var randomPosition = positionFabric.GetNextSpawnPosition();
+            var randomPosition = positionFactory.GetNextSpawnPosition();
             systemState.EntityManager.SetComponentData(entities[i], new Translation { Value = randomPosition });
         }
 
