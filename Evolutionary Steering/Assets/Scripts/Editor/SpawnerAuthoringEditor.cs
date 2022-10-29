@@ -21,7 +21,6 @@ public class PositionFactoryDataEditor : Editor
     private void DisplayCommonSettings()
     {
         EditorGUILayout.PropertyField(serializedObject.FindProperty("factoryType"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("offset"));
     }
 
     private void DisplaySquareSettings()
