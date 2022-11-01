@@ -3,11 +3,13 @@ using UnityEngine;
 
 public class CameraFollowAuthoring : MonoBehaviour
 {
-    public Vector3 defaultPosition;
-    public Vector3 offset;
-    public float moveSpeed;
-    public float scrollSpeed;
     public bool initEnableState;
+    public Vector3 offset;
+
+    public Range fromRange;
+    public Range moveSpeedRange;
+    public Range dragSpeedRange;
+    public Range scrollSpeedRange;
 
     class CameraFollowBaker : Baker<CameraFollowAuthoring>
     {
@@ -15,11 +17,13 @@ public class CameraFollowAuthoring : MonoBehaviour
         {
             AddComponent(new CameraFollow
             {
-                offset = authoring.offset,
                 enabled = authoring.initEnableState,
-                defaultPosition = authoring.defaultPosition,
-                moveSpeed = authoring.moveSpeed,
-                scrollSpeed = authoring.scrollSpeed
+                offset = authoring.offset,
+
+                fromRange = authoring.fromRange,
+                moveSpeedRange = authoring.moveSpeedRange,
+                dragSpeedRange = authoring.dragSpeedRange,
+                scrollSpeedRange = authoring.scrollSpeedRange
             });
         }
     }

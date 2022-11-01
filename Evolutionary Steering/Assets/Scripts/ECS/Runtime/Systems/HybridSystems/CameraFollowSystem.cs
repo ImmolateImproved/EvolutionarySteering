@@ -13,8 +13,6 @@ public partial class CameraFollowSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        var camera = Camera.main;
-
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             foreach (var cameraFollow in SystemAPI.Query<RefRW<CameraFollow>>())
@@ -58,14 +56,16 @@ public partial class CameraFollowSystem : SystemBase
             }
         }
 
+        var camera = Camera.main.transform;
+
         Entities.ForEach((ref CameraFollow cameraFollow) =>
         {
-            var cameraPos = camera.transform.position;
+            var cameraPos = camera.position;
+            var cameraPosY = camera.position.y;
 
             if (Input.GetKeyDown(KeyCode.R))
             {
                 cameraFollow.enabled = false;
-                cameraPos = cameraFollow.defaultPosition;
             }
 
             if (cameraFollow.enabled && HasComponent<Translation>(cameraFollow.currentTarget))
@@ -73,21 +73,36 @@ public partial class CameraFollowSystem : SystemBase
                 cameraPos = GetComponent<Translation>(cameraFollow.currentTarget).Value + cameraFollow.offset;
             }
 
+            var dt = SystemAPI.Time.DeltaTime;
+
+            var dy = cameraFollow.GetScrollSpeed(cameraPosY) * dt * Input.mouseScrollDelta;
+
             if (!cameraFollow.enabled)
             {
-                var h = Input.GetAxisRaw("Horizontal");
-                var v = Input.GetAxisRaw("Vertical");
+                var movement = Vector3.zero;
 
-                var dy = Input.GetAxisRaw("Mouse ScrollWheel") * cameraFollow.scrollSpeed;
+                movement.x = Input.GetAxisRaw("Horizontal");
+                movement.z = Input.GetAxisRaw("Vertical");
+                movement.Normalize();
+                movement *= cameraFollow.GetMoveSpeed(cameraPosY);
 
-                var dt = SystemAPI.Time.DeltaTime;
+                if (Input.GetMouseButton(0))
+                {
+                    movement.x -= Input.GetAxisRaw("Mouse X");
+                    movement.z -= Input.GetAxisRaw("Mouse Y");
+                    movement *= cameraFollow.GetDragSpeed(cameraPosY);
+                }
 
-                cameraPos += cameraFollow.moveSpeed * dt * new Vector3(h, 0, v).normalized;
+                cameraPos += dt * movement;
 
-                cameraPos.y -= dy * dt;
+                cameraPos.y -= dy.y;
+            }
+            else
+            {
+                cameraFollow.offset.y -= dy.y;
             }
 
-            camera.transform.position = cameraPos;
+            camera.position = cameraPos;
 
         }).WithoutBurst().Run();
     }
