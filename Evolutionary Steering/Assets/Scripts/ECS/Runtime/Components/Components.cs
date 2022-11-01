@@ -29,7 +29,6 @@ public struct CameraFollow : IComponentData
 {
     public bool enabled;
 
-    public Entity target;
+    public Entity currentTarget;
     public float3 offset;
-    public float rotationSpeed;
 }

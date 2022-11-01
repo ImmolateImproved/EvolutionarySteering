@@ -25,16 +25,23 @@ public partial class CameraFollowSystem : SystemBase
 
         foreach (var cameraFollow in SystemAPI.Query<RefRW<CameraFollow>>())
         {
-            var targetExists = HasComponent<Translation>(cameraFollow.ValueRO.target);
+            ref var cameraFollowRW = ref cameraFollow.ValueRW;
 
-            var followEnabled = cameraFollow.ValueRW.enabled;
+            var currentTargetExists = HasComponent<Translation>(cameraFollowRW.currentTarget);
 
-            if (Input.GetKeyDown(KeyCode.Space) || !targetExists)
+            var spacePressed = Input.GetKeyDown(KeyCode.Space);
+
+            if (spacePressed)
             {
-                cameraFollow.ValueRW.enabled = true;
-                if (targetExists && !followEnabled)
+                if (!cameraFollowRW.enabled)
+                {
+                    cameraFollowRW.enabled = true;
                     return;
+                }
+            }
 
+            if (spacePressed || (!currentTargetExists && cameraFollowRW.enabled))
+            {
                 var steeringAgentQuery = SystemAPI.QueryBuilder().WithAll<SteeringAgent>().Build().ToEntityArray(Unity.Collections.Allocator.Temp);
 
                 if (steeringAgentQuery.Length <= 0)
@@ -42,20 +49,16 @@ public partial class CameraFollowSystem : SystemBase
 
                 var i = UnityEngine.Random.Range(0, steeringAgentQuery.Length);
 
-
-                cameraFollow.ValueRW.target = steeringAgentQuery[i];
+                cameraFollowRW.currentTarget = steeringAgentQuery[i];
             }
         }
 
         Entities.ForEach((ref CameraFollow cameraFollow) =>
         {
-            if (!cameraFollow.enabled)
+            if (!cameraFollow.enabled || !HasComponent<Translation>(cameraFollow.currentTarget))
                 return;
 
-            if (!HasComponent<Translation>(cameraFollow.target))
-                return;
-
-            camera.transform.position = GetComponent<Translation>(cameraFollow.target).Value + cameraFollow.offset;
+            camera.transform.position = GetComponent<Translation>(cameraFollow.currentTarget).Value + cameraFollow.offset;
 
         }).WithoutBurst().Run();
     }

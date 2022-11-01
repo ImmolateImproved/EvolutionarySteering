@@ -4,7 +4,7 @@ using UnityEngine;
 public class CameraFollowAuthoring : MonoBehaviour
 {
     public Vector3 offset;
-    public float rotationSpeed;
+    public bool initEnableState;
 
     class CameraFollowBaker : Baker<CameraFollowAuthoring>
     {
@@ -13,7 +13,7 @@ public class CameraFollowAuthoring : MonoBehaviour
             AddComponent(new CameraFollow
             {
                 offset = authoring.offset,
-                rotationSpeed = authoring.rotationSpeed
+                enabled = authoring.initEnableState
             });
         }
     }
