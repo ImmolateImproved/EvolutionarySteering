@@ -62,7 +62,7 @@ public partial class CameraFollowSystem : SystemBase
         {
             var cameraPos = camera.transform.position;
 
-            if (Input.GetKeyDown(KeyCode.D))
+            if (Input.GetKeyDown(KeyCode.R))
             {
                 cameraFollow.enabled = false;
                 cameraPos = cameraFollow.defaultPosition;
@@ -71,6 +71,20 @@ public partial class CameraFollowSystem : SystemBase
             if (cameraFollow.enabled && HasComponent<Translation>(cameraFollow.currentTarget))
             {
                 cameraPos = GetComponent<Translation>(cameraFollow.currentTarget).Value + cameraFollow.offset;
+            }
+
+            if (!cameraFollow.enabled)
+            {
+                var h = Input.GetAxisRaw("Horizontal");
+                var v = Input.GetAxisRaw("Vertical");
+
+                var dy = Input.GetAxisRaw("Mouse ScrollWheel") * cameraFollow.scrollSpeed;
+
+                var dt = SystemAPI.Time.DeltaTime;
+
+                cameraPos += cameraFollow.moveSpeed * dt * new Vector3(h, 0, v).normalized;
+
+                cameraPos.y -= dy * dt;
             }
 
             camera.transform.position = cameraPos;
