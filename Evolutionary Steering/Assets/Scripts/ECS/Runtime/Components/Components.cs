@@ -31,4 +31,5 @@ public struct CameraFollow : IComponentData
 
     public Entity currentTarget;
     public float3 offset;
+    public float3 defaultPosition;
 }

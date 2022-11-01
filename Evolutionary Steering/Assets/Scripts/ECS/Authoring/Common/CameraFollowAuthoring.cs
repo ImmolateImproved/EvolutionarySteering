@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CameraFollowAuthoring : MonoBehaviour
 {
+    public Vector3 defaultPosition;
     public Vector3 offset;
     public bool initEnableState;
 
@@ -13,7 +14,8 @@ public class CameraFollowAuthoring : MonoBehaviour
             AddComponent(new CameraFollow
             {
                 offset = authoring.offset,
-                enabled = authoring.initEnableState
+                enabled = authoring.initEnableState,
+                defaultPosition = authoring.defaultPosition
             });
         }
     }

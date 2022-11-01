@@ -47,7 +47,12 @@ public partial class CameraFollowSystem : SystemBase
                 if (steeringAgentQuery.Length <= 0)
                     return;
 
-                var i = UnityEngine.Random.Range(0, steeringAgentQuery.Length);
+                var i = 0;
+                do
+                {
+                    i = UnityEngine.Random.Range(0, steeringAgentQuery.Length);
+
+                } while (steeringAgentQuery.Length > 1 && steeringAgentQuery[i] == cameraFollowRW.currentTarget);
 
                 cameraFollowRW.currentTarget = steeringAgentQuery[i];
             }
@@ -55,10 +60,20 @@ public partial class CameraFollowSystem : SystemBase
 
         Entities.ForEach((ref CameraFollow cameraFollow) =>
         {
-            if (!cameraFollow.enabled || !HasComponent<Translation>(cameraFollow.currentTarget))
-                return;
+            var cameraPos = camera.transform.position;
 
-            camera.transform.position = GetComponent<Translation>(cameraFollow.currentTarget).Value + cameraFollow.offset;
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                cameraFollow.enabled = false;
+                cameraPos = cameraFollow.defaultPosition;
+            }
+
+            if (cameraFollow.enabled && HasComponent<Translation>(cameraFollow.currentTarget))
+            {
+                cameraPos = GetComponent<Translation>(cameraFollow.currentTarget).Value + cameraFollow.offset;
+            }
+
+            camera.transform.position = cameraPos;
 
         }).WithoutBurst().Run();
     }
