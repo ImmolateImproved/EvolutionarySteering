@@ -187,7 +187,7 @@ MonoBehaviour:
   health: 100
   hpPerFood: 75
   hpPerPoison: 50
-  hpDecreasePerSeconds: 20
+  hpDecreasePerSeconds: 15
   fullHpColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &5032751289064389116
 MonoBehaviour:
