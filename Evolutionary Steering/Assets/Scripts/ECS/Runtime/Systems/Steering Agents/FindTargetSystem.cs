@@ -22,99 +22,117 @@ public partial struct FindTargetSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var targetsQuery = SystemAPI.QueryBuilder().WithAll<Translation, TargetType>().Build();
-
-        var targetEntities = targetsQuery.ToEntityArray(Allocator.TempJob);
-        var targetPositions = targetsQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
-        var targetTypes = targetsQuery.ToComponentDataArray<TargetType>(Allocator.TempJob);
-
         var dt = SystemAPI.Time.DeltaTime;
 
-        state.Dependency = new FindTargetJob
-        {
-            targetEntities = targetEntities,
-            targetPositions = targetPositions,
-            targetTypes = targetTypes,
-            dt = dt
+        var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
 
-        }.ScheduleParallel(state.Dependency);
+        new FindTargetJob
+        {
+            dt = dt,
+            physicsWorld = physicsWorld
+
+        }.ScheduleParallel();
+
+        #region OldFindTarget
+        //var targetsQuery = SystemAPI.QueryBuilder().WithAll<Translation, TargetType>().Build();
+
+        //var targetEntities = targetsQuery.ToEntityArray(Allocator.TempJob);
+        //var targetPositions = targetsQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
+        //var targetTypes = targetsQuery.ToComponentDataArray<TargetType>(Allocator.TempJob);
+
+        //state.Dependency = new FindTargetByCheckingDistanceJob
+        //{
+        //    targetEntities = targetEntities,
+        //    targetPositions = targetPositions,
+        //    targetTypes = targetTypes,
+        //    dt = dt
+
+        //}.ScheduleParallel(state.Dependency);
+        #endregion
     }
+
+    //[BurstCompile]
+    //partial struct FindTargetByCheckingDistanceJob : IJobEntity
+    //{
+    //    [ReadOnly]
+    //    [DeallocateOnJobCompletion]
+    //    public NativeArray<Entity> targetEntities;
+
+    //    [ReadOnly]
+    //    [DeallocateOnJobCompletion]
+    //    public NativeArray<Translation> targetPositions;
+
+    //    [ReadOnly]
+    //    [DeallocateOnJobCompletion]
+    //    public NativeArray<TargetType> targetTypes;
+
+    //    public float dt;
+
+    //    public void Execute(in TransformAspect transform, ref DynamicBuffer<TargetSeeker> seekerBuffer)
+    //    {
+    //        var distances = new NativeArray<float>(seekerBuffer.Length, Allocator.Temp);
+
+    //        for (int i = 0; i < distances.Length; i++)
+    //        {
+    //            distances[i] = math.INFINITY;
+    //        }
+
+    //        var newTargetEntity = new NativeArray<Entity>(seekerBuffer.Length, Allocator.Temp);
+
+    //        for (int i = 0; i < targetEntities.Length; i++)
+    //        {
+    //            var targetTypeIndex = (int)targetTypes[i].value;
+
+    //            var newDistance = math.distance(transform.Position, targetPositions[i].Value);
+
+    //            if (newDistance < seekerBuffer[targetTypeIndex].searchRadius && newDistance < distances[targetTypeIndex])
+    //            {
+    //                distances[targetTypeIndex] = newDistance;
+
+    //                newTargetEntity[targetTypeIndex] = targetEntities[i];
+    //            }
+    //        }
+
+    //        for (int i = 0; i < seekerBuffer.Length; i++)
+    //        {
+    //            ref var seeker = ref seekerBuffer.ElementAt(i);
+
+    //            seeker.seekTimer += dt;
+    //            if (seeker.seekTimer >= seeker.timeBeforeSeek)
+    //            {
+    //                seeker.target = newTargetEntity[i];
+    //            }
+    //        }
+    //    }
+    //}
 
     [BurstCompile]
     partial struct FindTargetJob : IJobEntity
     {
         [ReadOnly]
-        [DeallocateOnJobCompletion]
-        public NativeArray<Entity> targetEntities;
-
-        [ReadOnly]
-        [DeallocateOnJobCompletion]
-        public NativeArray<Translation> targetPositions;
-
-        [ReadOnly]
-        [DeallocateOnJobCompletion]
-        public NativeArray<TargetType> targetTypes;
+        public PhysicsWorldSingleton physicsWorld;
 
         public float dt;
 
-        public void Execute(in TransformAspect transform, ref DynamicBuffer<TargetSeeker> seekerBuffer)
+        public void Execute(in Translation translation, ref DynamicBuffer<TargetSeeker> seekerBuffer)
         {
-            var distances = new NativeArray<float>(seekerBuffer.Length, Allocator.Temp);
-
-            for (int i = 0; i < distances.Length; i++)
-            {
-                distances[i] = math.INFINITY;
-            }
-
-            var newTargetEntity = new NativeArray<Entity>(seekerBuffer.Length, Allocator.Temp);
-
-            for (int i = 0; i < targetEntities.Length; i++)
-            {
-                var targetTypeIndex = (int)targetTypes[i].value;
-
-                var newDistance = math.distance(transform.Position, targetPositions[i].Value);
-
-                if (newDistance < seekerBuffer[targetTypeIndex].searchRadius && newDistance < distances[targetTypeIndex])
-                {
-                    distances[targetTypeIndex] = newDistance;
-
-                    newTargetEntity[targetTypeIndex] = targetEntities[i];
-                }
-            }
-
             for (int i = 0; i < seekerBuffer.Length; i++)
             {
                 ref var seeker = ref seekerBuffer.ElementAt(i);
 
-                seeker.seekTimer += dt;
-                if (seeker.seekTimer >= seeker.timeBeforeSeek)
-                {
-                    seeker.target = newTargetEntity[i];
-                }
-            }
-        }
-    }
-
-    [BurstCompile]
-    partial struct FindTargetWithUnityPhysicsJob : IJobEntity
-    {
-        [ReadOnly]
-        public PhysicsWorldSingleton physicsWorld;
-
-        public void Execute(in Translation translation, in DynamicBuffer<TargetSeeker> seeker)
-        {
-            for (int i = 0; i < seeker.Length; i++)
-            {
                 var input = new PointDistanceInput
                 {
-                    Filter = seeker[i].layers,
-                    MaxDistance = seeker[i].searchRadius,
+                    Filter = seeker.layers,
+                    MaxDistance = seeker.searchRadius,
                     Position = translation.Value
                 };
 
-                if (physicsWorld.CalculateDistance(input, out var closet))
+                seeker.seekTimer += dt;
+                if (seeker.seekTimer >= seeker.timeBeforeSeek)
                 {
-                    seeker.ElementAt(i).target = closet.Entity;
+                    physicsWorld.CalculateDistance(input, out var closet);
+
+                    seekerBuffer.ElementAt(i).target = closet.Entity;
                 }
             }
         }

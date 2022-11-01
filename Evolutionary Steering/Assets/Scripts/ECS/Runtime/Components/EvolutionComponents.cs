@@ -1,15 +1,22 @@
 ﻿using Unity.Entities;
 using Unity.Transforms;
+using UnityEngine;
 
 public struct ReproductionData : IComponentData
 {
     public int foodToReproduce;
     public int currentFood;
-    public Entity seekerPrefab;
+}
+
+public struct ChildPrefab : IComponentData
+{
+    public Entity value;
 }
 
 public struct MutationData : IComponentData
 {
+    public float mutationChance;
+
     public float attractionFroce;
     public float maxSpeed;
     public float maxFroce;
@@ -37,7 +44,7 @@ public readonly partial struct ReproductionAspect : IAspect
 
     private MutationData MutationData => mutationData.ValueRO;
 
-    public void ReproduceAndMutate(ref EntityCommandBuffer.ParallelWriter ecb, int chunkIndex)
+    public void ReproduceAndMutate(ref EntityCommandBuffer.ParallelWriter ecb, int chunkIndex, Entity childPrefab)
     {
         if (targetInRange.ValueRO.targetType == TargetTypeEnum.Food)
         {
@@ -47,44 +54,56 @@ public readonly partial struct ReproductionAspect : IAspect
             {
                 reproductionData.ValueRW.currentFood = 0;
 
-                var seeker = ecb.Instantiate(chunkIndex, reproductionData.ValueRO.seekerPrefab);
-                Mutate(ref ecb, chunkIndex, seeker);
+                var seeker = ecb.Instantiate(chunkIndex, childPrefab);
+
+                InheritGenes(ref ecb, chunkIndex, seeker);
             }
         }
     }
 
-    private void Mutate(ref EntityCommandBuffer.ParallelWriter ecb, int chunkIndex, Entity seeker)
+    private void InheritGenes(ref EntityCommandBuffer.ParallelWriter ecb, int chunkIndex, Entity seeker)
     {
-        ecb.SetComponent(chunkIndex, seeker, new PhysicsData
-        {
-            maxSpeed = physicsData.ValueRO.maxSpeed + mutationData.ValueRW.GetMutationAmount(MutationData.maxSpeed),
-            velocity = -physicsData.ValueRO.velocity
-        });
-
         ecb.SetComponent(chunkIndex, seeker, translation.ValueRO);
-        ecb.SetComponent(chunkIndex, seeker, MutateSteeringAgent());
+
+        var newPhysicsData = physicsData.ValueRO;
+        InheritPhysicsData(ref newPhysicsData);
+        ecb.SetComponent(chunkIndex, seeker, newPhysicsData);
+
+        var newSteeringAgent = steeringData.ValueRO;
+        InheritSteeringAgent(ref newSteeringAgent);
+        ecb.SetComponent(chunkIndex, seeker, newSteeringAgent);
 
         var seekerDatas = ecb.SetBuffer<TargetSeeker>(chunkIndex, seeker);
-        MutateSeeker(ref seekerDatas);
+        InheritSeeker(ref seekerDatas);
     }
 
-    private SteeringAgent MutateSteeringAgent()
+    private void InheritPhysicsData(ref PhysicsData physicsData)
     {
-        var newSteeringData = steeringData.ValueRO;
-
-        newSteeringData.maxForce += mutationData.ValueRW.GetMutationAmount(MutationData.maxFroce);
-
-        return newSteeringData;
+        physicsData.velocity *= -1;
+        if (MutationNeeded())
+        {
+            physicsData.maxSpeed += mutationData.ValueRW.GetMutationAmount(MutationData.maxSpeed);
+        }
     }
 
-    private void MutateSeeker(ref DynamicBuffer<TargetSeeker> seekerDatas)
+    private void InheritSteeringAgent(ref SteeringAgent steeringAgent)
+    {
+        if (MutationNeeded())
+        {
+            steeringAgent.maxForce += mutationData.ValueRW.GetMutationAmount(MutationData.maxFroce);
+        }
+    }
+
+    private void InheritSeeker(ref DynamicBuffer<TargetSeeker> seekerDatas)
     {
         seekerDatas.CopyFrom(targetSeeker);
-
         ref var seeker1 = ref seekerDatas.ElementAt(0);
 
         seeker1.seekTimer = 0;
         seeker1.timeBeforeSeek = 2;
+
+        if (!MutationNeeded())
+            return;
 
         for (int i = 0; i < seekerDatas.Length; i++)
         {
@@ -93,5 +112,10 @@ public readonly partial struct ReproductionAspect : IAspect
             seeker.searchRadius += mutationData.ValueRW.GetMutationAmount(MutationData.targetSearchRadius);
             seeker.attractionForce += mutationData.ValueRW.GetMutationAmount(MutationData.attractionFroce);
         }
+    }
+
+    private bool MutationNeeded()
+    {
+        return mutationData.ValueRW.random.NextFloat(1) < mutationData.ValueRO.mutationChance;
     }
 }

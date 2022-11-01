@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class ReproductionAuthoring : MonoBehaviour
 {
-    public GameObject prefab;
     public int foodToReproduce;
 
+    public float mutationChance;
     public float attractionFroce;
     public float maxSpeed;
     public float maxFroce;
@@ -17,12 +17,12 @@ public class ReproductionAuthoring : MonoBehaviour
         {
             AddComponent(new ReproductionData
             {
-                seekerPrefab = GetEntity(authoring.prefab),
                 foodToReproduce = authoring.foodToReproduce
             });
 
             AddComponent(new MutationData
             {
+                mutationChance = authoring.mutationChance,
                 attractionFroce = authoring.attractionFroce,
                 targetSearchRadius = authoring.targetSearchRadius,
                 maxFroce = authoring.maxFroce,

@@ -36,6 +36,14 @@ PrefabInstance:
       propertyPath: targetType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6548513786848090848, guid: 6d147390a7ace54489ddde001c85a391, type: 3}
+      propertyPath: m_Material.m_BelongsToCategories.m_Value.Category01
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6548513786848090848, guid: 6d147390a7ace54489ddde001c85a391, type: 3}
+      propertyPath: m_Material.m_BelongsToCategories.m_Value.Category02
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6771122621445135229, guid: 6d147390a7ace54489ddde001c85a391, type: 3}
       propertyPath: m_RootOrder
       value: 0

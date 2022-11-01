@@ -1,5 +1,6 @@
 ﻿using Unity.Burst;
 using Unity.Entities;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 [BurstCompile]
@@ -45,7 +46,7 @@ public partial struct SeekerSpawnerSpawnerSystem : ISystem
                     foodSeekerData.searchRadius = mutationData.ValueRW.GetFoodSearchRadiusMutation();
 
                     ref var poisonSeekerData = ref seekerDatas.ElementAt(1);
-                    poisonSeekerData.attractionForce = mutationData.ValueRW.GetRepultionForceMutation();
+                    poisonSeekerData.attractionForce = -mutationData.ValueRW.GetRepultionForceMutation();
                     poisonSeekerData.searchRadius = mutationData.ValueRW.GetPoisonSearchRadiusMutation();
 
                 }

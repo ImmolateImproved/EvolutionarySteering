@@ -27,6 +27,9 @@ public struct Health : IComponentData
 
 public struct CameraFollow : IComponentData
 {
+    public bool enabled;
+
+    public Entity target;
     public float3 offset;
     public float rotationSpeed;
 }
