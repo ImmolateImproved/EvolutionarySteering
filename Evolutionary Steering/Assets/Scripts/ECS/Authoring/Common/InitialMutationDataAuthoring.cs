@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class InitialMutationDataAuthoring : MonoBehaviour
 {
-    public InitialMutation mutationData;
+    public InitialSeekerStats mutationData;
 
     public class MutationDataBaker : Baker<InitialMutationDataAuthoring>
     {

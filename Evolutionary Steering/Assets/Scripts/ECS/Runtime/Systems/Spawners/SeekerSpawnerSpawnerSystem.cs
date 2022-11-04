@@ -23,7 +23,7 @@ public partial struct SeekerSpawnerSpawnerSystem : ISystem
     {
         var targetSeekerLookup = SystemAPI.GetBufferLookup<TargetSeeker>();
 
-        foreach (var (spawner, gridPositionFabric, mutationData) in SystemAPI.Query<SpawnerAspect, RefRW<GridPositionFactory>, RefRW<InitialMutation>>().WithNone<SpawnTimer>())
+        foreach (var (spawner, gridPositionFabric, mutationData) in SystemAPI.Query<SpawnerAspect, RefRW<GridPositionFactory>, RefRW<InitialSeekerStats>>().WithNone<SpawnTimer>())
         {
             for (int i = 0; i < spawner.SpawnRequestCount; i++)
             {
@@ -32,22 +32,22 @@ public partial struct SeekerSpawnerSpawnerSystem : ISystem
                 for (int j = 0; j < seekerEntities.Length; j++)
                 {
                     var steeringAgent = SystemAPI.GetComponent<SteeringAgent>(seekerEntities[j]);
-                    steeringAgent.maxForce = mutationData.ValueRW.GetForceMutation();
+                    steeringAgent.maxForce = mutationData.ValueRW.GetMaxForce();
                     SystemAPI.SetComponent(seekerEntities[j], steeringAgent);
 
                     var physicsData = SystemAPI.GetComponent<PhysicsData>(seekerEntities[j]);
-                    physicsData.maxSpeed = mutationData.ValueRW.GetSpeedMutation();
+                    physicsData.maxSpeed = mutationData.ValueRW.GetMaxSpeed();
                     SystemAPI.SetComponent(seekerEntities[j], physicsData);
 
                     var seekerDatas = targetSeekerLookup[seekerEntities[j]];//SystemAPI.GetBuffer<TargetSeeker>(seekerEntities[j]);
 
                     ref var foodSeekerData = ref seekerDatas.ElementAt(0);
-                    foodSeekerData.attractionForce = mutationData.ValueRW.GetAttractionForceMutation();
-                    foodSeekerData.searchRadius = mutationData.ValueRW.GetFoodSearchRadiusMutation();
+                    foodSeekerData.attractionForce = mutationData.ValueRW.GetAttractionForce();
+                    foodSeekerData.searchRadius = mutationData.ValueRW.GetFoodSearchRadius();
 
                     ref var poisonSeekerData = ref seekerDatas.ElementAt(1);
-                    poisonSeekerData.attractionForce = -mutationData.ValueRW.GetRepultionForceMutation();
-                    poisonSeekerData.searchRadius = mutationData.ValueRW.GetPoisonSearchRadiusMutation();
+                    poisonSeekerData.attractionForce = -mutationData.ValueRW.GetRepultionForce();
+                    poisonSeekerData.searchRadius = mutationData.ValueRW.GetPoisonSearchRadius();
 
                 }
             }

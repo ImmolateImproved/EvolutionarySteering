@@ -38,13 +38,14 @@ public partial struct ReproductionSystem : ISystem
     {
         [ReadOnly]
         public DynamicBuffer<UnitPrefab> unitPrefabs;
+
         public EntityCommandBuffer.ParallelWriter ecb;
 
-        public void Execute([ChunkIndexInQuery] int chunkIndex, ReproductionAspect reproductionAspect)
+        public void Execute([ChunkIndexInQuery] int chunkIndex, MutationAspect mutationAspect)
         {
-            var unitPrefab = unitPrefabs[reproductionAspect.PrefabIndex].value;
+            var unitPrefab = unitPrefabs[mutationAspect.PrefabIndex].value;
 
-            reproductionAspect.ReproduceAndMutate(ref ecb, chunkIndex, unitPrefab);
+            mutationAspect.ReproduceAndMutate(ref ecb, chunkIndex, unitPrefab);
         }
     }
 }

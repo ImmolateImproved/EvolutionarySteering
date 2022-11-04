@@ -2,56 +2,45 @@
 using Unity.Physics;
 
 [System.Serializable]
-public struct InitialMutation : IComponentData
+public struct InitialSeekerStats : IComponentData
 {
-    public float minAttractionFroce;
-    public float maxAttractionFroce;
-
-    public float minRepultionFroce;
-    public float maxRepultionFroce;
-
-    public float minSpeed;
-    public float maxSpeed;
-
-    public float minForce;
-    public float maxForce;
-
-    public float minFoodSearchRadius;
-    public float maxFoodSearchRadius;
-
-    public float minPoisonSearchRadius;
-    public float maxPoisonSearchRadius;
+    public Range attarctionFroce;
+    public Range repultionForce;
+    public Range maxSpeed;
+    public Range maxForce;
+    public Range foodSearchRadius;
+    public Range poisonSearchRadius;
 
     public Unity.Mathematics.Random random;
 
-    public float GetAttractionForceMutation()
+    public float GetAttractionForce()
     {
-        return random.NextFloat(minAttractionFroce, maxAttractionFroce);
+        return random.NextFloat(attarctionFroce.min, attarctionFroce.max);
     }
 
-    public float GetRepultionForceMutation()
+    public float GetRepultionForce()
     {
-        return random.NextFloat(minRepultionFroce, maxRepultionFroce);
+        return random.NextFloat(repultionForce.min, repultionForce.max);
     }
 
-    public float GetSpeedMutation()
+    public float GetMaxSpeed()
     {
-        return random.NextFloat(minSpeed, maxSpeed);
+        return random.NextFloat(maxSpeed.min, maxSpeed.max);
     }
 
-    public float GetForceMutation()
+    public float GetMaxForce()
     {
-        return random.NextFloat(minForce, maxForce);
+        return random.NextFloat(maxForce.min, maxForce.max);
     }
 
-    public float GetFoodSearchRadiusMutation()
+    public float GetFoodSearchRadius()
     {
-        return random.NextFloat(minFoodSearchRadius, maxFoodSearchRadius);
+        return random.NextFloat(foodSearchRadius.min, foodSearchRadius.max);
     }
 
-    public float GetPoisonSearchRadiusMutation()
+    public float GetPoisonSearchRadius()
     {
-        return random.NextFloat(minPoisonSearchRadius, maxPoisonSearchRadius);
+        return random.NextFloat(poisonSearchRadius.min, poisonSearchRadius.max);
     }
 }
 
@@ -85,5 +74,5 @@ public struct UnitType : IComponentData
 
 public struct TargetInRange : IComponentData, IEnableableComponent
 {
-    public TargetTypeEnum targetType;   
+    public TargetTypeEnum targetType;
 }

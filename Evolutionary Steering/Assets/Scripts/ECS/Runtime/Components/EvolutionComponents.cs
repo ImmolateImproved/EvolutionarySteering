@@ -31,7 +31,7 @@ public struct MutationData : IComponentData
     }
 }
 
-public readonly partial struct ReproductionAspect : IAspect
+public readonly partial struct MutationAspect : IAspect
 {
     readonly RefRW<MutationData> mutationData;
     readonly RefRW<ReproductionData> reproductionData;
