@@ -1,15 +1,12 @@
-using TMPro;
 using Unity.Burst;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 [BurstCompile]
 [UpdateBefore(typeof(RotateTowardsVelocitySystem))]
-public partial struct SteeringSystem : ISystem
+public partial struct PursueTargetSystem : ISystem
 {
     public void OnCreate(ref SystemState state)
     {

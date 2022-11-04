@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5032751289064389116, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
       propertyPath: foodToReproduce
-      value: 7
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5981704220167515947, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
       propertyPath: m_RootOrder
@@ -134,7 +134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7760748409216835091, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
       propertyPath: hpDecreasePerSeconds
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

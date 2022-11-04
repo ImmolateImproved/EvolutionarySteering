@@ -44,6 +44,7 @@ public struct InitialSeekerStats : IComponentData
     }
 }
 
+[InternalBufferCapacity(0)]
 public struct TargetSeeker : IBufferElementData
 {
     public Entity target;

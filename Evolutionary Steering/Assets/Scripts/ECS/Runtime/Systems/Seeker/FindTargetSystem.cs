@@ -6,7 +6,7 @@ using Unity.Physics;
 using Unity.Transforms;
 
 [BurstCompile]
-[UpdateBefore(typeof(SteeringSystem))]
+[UpdateBefore(typeof(PursueTargetSystem))]
 public partial struct FindTargetSystem : ISystem
 {
     public void OnCreate(ref SystemState state)

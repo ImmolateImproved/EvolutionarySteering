@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2373885374998242938, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
+      propertyPath: seekerDatas.Array.data[1].targetLayer.Category03
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2751244647477817836, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
       propertyPath: m_Name
       value: Herbivorous
