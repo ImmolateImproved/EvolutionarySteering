@@ -4,11 +4,12 @@ using UnityEngine;
 
 public struct ReproductionData : IComponentData
 {
+    public int prefabIndex;
     public int foodToReproduce;
     public int currentFood;
 }
 
-public struct ChildPrefab : IComponentData
+public struct UnitPrefab : IBufferElementData
 {
     public Entity value;
 }
@@ -43,6 +44,8 @@ public readonly partial struct ReproductionAspect : IAspect
     readonly DynamicBuffer<TargetSeeker> targetSeeker;
 
     private MutationData MutationData => mutationData.ValueRO;
+
+    public int PrefabIndex => reproductionData.ValueRO.prefabIndex;
 
     public void ReproduceAndMutate(ref EntityCommandBuffer.ParallelWriter ecb, int chunkIndex, Entity childPrefab)
     {

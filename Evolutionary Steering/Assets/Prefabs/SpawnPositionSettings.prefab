@@ -1,5 +1,54 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &711113229
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 711113230}
+  - component: {fileID: 711113231}
+  m_Layer: 0
+  m_Name: PredatorSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &711113230
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711113229}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1058882952687463800}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &711113231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711113229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d218e41b4ec2b694b94c591695e9418d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  positionFactory: {fileID: 1058882952687463801}
+  spawnRequests:
+  - prefab: {fileID: 2751244647477817836, guid: f191815aec742d74188ed5f73230a3e6, type: 3}
+    count: 3
+  timeBetweenSpawns: 0
 --- !u!1 &1058882951435089219
 GameObject:
   m_ObjectHideFlags: 0
@@ -47,10 +96,10 @@ MonoBehaviour:
   positionFactory: {fileID: 1058882952687463801}
   spawnRequests:
   - prefab: {fileID: 2943935801606489530, guid: 6d147390a7ace54489ddde001c85a391, type: 3}
-    count: 2000
-  - prefab: {fileID: 2140678988757800765, guid: 4ace277525b03a54c8e6bd081f7935c5, type: 3}
     count: 15
-  timeBetweenSpawns: 25
+  - prefab: {fileID: 2140678988757800765, guid: 4ace277525b03a54c8e6bd081f7935c5, type: 3}
+    count: 0
+  timeBetweenSpawns: 1
 --- !u!1 &1058882951633410770
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,9 +111,8 @@ GameObject:
   - component: {fileID: 1058882951633410769}
   - component: {fileID: 1058882951633410768}
   - component: {fileID: 1058882951633410783}
-  - component: {fileID: 1058882951633410782}
   m_Layer: 0
-  m_Name: SeekerSpawner
+  m_Name: HerbivorousSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100,7 +148,7 @@ MonoBehaviour:
   positionFactory: {fileID: 1058882952687463801}
   spawnRequests:
   - prefab: {fileID: 2751244647477817836, guid: 571fc4eb55a712443aadf7b5b3ac0c4d, type: 3}
-    count: 4000
+    count: 5
   timeBetweenSpawns: 0
 --- !u!114 &1058882951633410783
 MonoBehaviour:
@@ -117,31 +165,18 @@ MonoBehaviour:
   mutationData:
     minAttractionFroce: 0.8
     maxAttractionFroce: 1.2
-    minRepultionFroce: 0.8
+    minRepultionFroce: 1
     maxRepultionFroce: 1.2
-    minSpeed: 5
-    maxSpeed: 11
+    minSpeed: 20
+    maxSpeed: 30
     minForce: 0.05
     maxForce: 0.1
     minFoodSearchRadius: 15
     maxFoodSearchRadius: 30
-    minPoisonSearchRadius: 1
-    maxPoisonSearchRadius: 5
+    minPoisonSearchRadius: 4
+    maxPoisonSearchRadius: 7
     random:
-      state: 2666150099
---- !u!114 &1058882951633410782
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1058882951633410770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f702651bcabf2a0428061ee931f17e43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 2751244647477817836, guid: 571fc4eb55a712443aadf7b5b3ac0c4d, type: 3}
+      state: 2515027949
 --- !u!1 &1058882951797723171
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,9 +224,9 @@ MonoBehaviour:
   positionFactory: {fileID: 1058882952687463801}
   spawnRequests:
   - prefab: {fileID: 2943935801606489530, guid: 6d147390a7ace54489ddde001c85a391, type: 3}
-    count: 10000
+    count: 55
   - prefab: {fileID: 2140678988757800765, guid: 4ace277525b03a54c8e6bd081f7935c5, type: 3}
-    count: 2000
+    count: 1
   timeBetweenSpawns: 0
 --- !u!1 &1058882952473024206
 GameObject:
@@ -275,8 +310,9 @@ Transform:
   - {fileID: 1058882951797723169}
   - {fileID: 1058882951435089217}
   - {fileID: 1058882951633410769}
+  - {fileID: 711113230}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1058882952687463801
 MonoBehaviour:
@@ -291,5 +327,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   factoryType: 0
-  bounds: {x: 500, y: 0, z: 500}
+  bounds: {x: 55, y: 0, z: 25}
   maxRadius: 50

@@ -63,11 +63,6 @@ public partial class CameraFollowSystem : SystemBase
             var cameraPos = camera.position;
             var cameraPosY = camera.position.y;
 
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                cameraFollow.enabled = false;
-            }
-
             if (cameraFollow.enabled && HasComponent<Translation>(cameraFollow.currentTarget))
             {
                 cameraPos = GetComponent<Translation>(cameraFollow.currentTarget).Value + cameraFollow.offset;

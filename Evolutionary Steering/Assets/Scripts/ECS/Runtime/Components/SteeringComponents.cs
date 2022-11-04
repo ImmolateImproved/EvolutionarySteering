@@ -5,7 +5,6 @@ using Unity.Transforms;
 public struct SteeringAgent : IComponentData
 {
     public float maxForce;
-    public float predictionAmount;
 }
 
 public readonly partial struct SteeringAgentAspect : IAspect
@@ -28,11 +27,5 @@ public readonly partial struct SteeringAgentAspect : IAspect
         force = MathUtils.ClampMagnitude(force, MaxForce);
 
         physicsBodyAspect.ResultantForce += force * attractionForce;
-    }
-
-    public void SteerAhead(float attractionForce, float3 targetPosition, float3 targetDirection)
-    {
-        targetPosition += targetDirection * steeringAgent.ValueRO.predictionAmount;
-        Steer(attractionForce, targetPosition);
     }
 }

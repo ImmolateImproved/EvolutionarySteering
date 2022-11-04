@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ReproductionAuthoring : MonoBehaviour
 {
+    public int prefabIndex;
+
     public int foodToReproduce;
 
     public float mutationChance;
@@ -17,6 +19,7 @@ public class ReproductionAuthoring : MonoBehaviour
         {
             AddComponent(new ReproductionData
             {
+                prefabIndex = authoring.prefabIndex,
                 foodToReproduce = authoring.foodToReproduce
             });
 
