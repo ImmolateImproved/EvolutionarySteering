@@ -21,7 +21,7 @@ public partial struct SeekerSpawnerSpawnerSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var targetSeekerLookup = SystemAPI.GetBufferLookup<TargetSeeker>();
+        var targetSeekerLookup = SystemAPI.GetComponentLookup<TargetSeeker>(true);
 
         foreach (var (spawner, gridPositionFabric, mutationData) in SystemAPI.Query<SpawnerAspect, RefRW<GridPositionFactory>, RefRW<InitialSeekerStats>>().WithNone<SpawnTimer>())
         {
@@ -39,16 +39,9 @@ public partial struct SeekerSpawnerSpawnerSystem : ISystem
                     physicsData.maxSpeed = mutationData.ValueRW.GetMaxSpeed();
                     SystemAPI.SetComponent(seekerEntities[j], physicsData);
 
-                    var seekerDatas = targetSeekerLookup[seekerEntities[j]];//SystemAPI.GetBuffer<TargetSeeker>(seekerEntities[j]);
-
-                    ref var foodSeekerData = ref seekerDatas.ElementAt(0);
+                    var foodSeekerData = targetSeekerLookup[seekerEntities[j]];
                     foodSeekerData.attractionForce = mutationData.ValueRW.GetAttractionForce();
                     foodSeekerData.searchRadius = mutationData.ValueRW.GetFoodSearchRadius();
-
-                    ref var poisonSeekerData = ref seekerDatas.ElementAt(1);
-                    poisonSeekerData.attractionForce = -mutationData.ValueRW.GetRepultionForce();
-                    poisonSeekerData.searchRadius = mutationData.ValueRW.GetPoisonSearchRadius();
-
                 }
             }
 

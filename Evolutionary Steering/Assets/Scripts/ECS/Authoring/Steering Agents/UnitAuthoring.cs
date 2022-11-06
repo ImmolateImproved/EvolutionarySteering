@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class UnitAuthoring : MonoBehaviour
 {
-    public TargetTypeEnum unitType;
+    public float unitType;
 
     class TargetBaker : Baker<UnitAuthoring>
     {

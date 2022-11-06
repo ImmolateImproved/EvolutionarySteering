@@ -1,12 +1,19 @@
 ﻿using Unity.Entities;
+using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
+
+public struct InactiveState : IComponentData
+{
+    public float duration;
+    public float timer;
+}
 
 public struct ReproductionData : IComponentData
 {
     public int prefabIndex;
-    public int foodToReproduce;
-    public int currentFood;
+    public int energyToReproduce;
+    public float inactiveStateDuration;
 }
 
 public struct UnitPrefab : IBufferElementData
@@ -34,14 +41,13 @@ public struct MutationData : IComponentData
 public readonly partial struct MutationAspect : IAspect
 {
     readonly RefRW<MutationData> mutationData;
-    readonly RefRW<ReproductionData> reproductionData;
-    readonly RefRO<TargetInRange> targetInRange;
+    readonly RefRO<ReproductionData> reproductionData;
+    readonly RefRO<TargetSeeker> targetSeeker;
 
+    readonly RefRW<Energy> energy;
     readonly RefRO<SteeringAgent> steeringData;
     readonly RefRO<PhysicsData> physicsData;
     readonly RefRO<Translation> translation;
-
-    readonly DynamicBuffer<TargetSeeker> targetSeeker;
 
     private MutationData MutationData => mutationData.ValueRO;
 
@@ -49,25 +55,30 @@ public readonly partial struct MutationAspect : IAspect
 
     public void ReproduceAndMutate(ref EntityCommandBuffer.ParallelWriter ecb, int chunkIndex, Entity childPrefab)
     {
-        if (targetInRange.ValueRO.targetType == TargetTypeEnum.Food)
+        if (energy.ValueRO.current >= reproductionData.ValueRO.energyToReproduce)
         {
-            reproductionData.ValueRW.currentFood++;
+            energy.ValueRW.current -= reproductionData.ValueRO.energyToReproduce;
 
-            if (reproductionData.ValueRO.currentFood >= reproductionData.ValueRO.foodToReproduce)
-            {
-                reproductionData.ValueRW.currentFood = 0;
+            var seeker = ecb.Instantiate(chunkIndex, childPrefab);
 
-                var seeker = ecb.Instantiate(chunkIndex, childPrefab);
+            Init(ref ecb, chunkIndex, seeker);
 
-                InheritGenes(ref ecb, chunkIndex, seeker);
-            }
+            InheritGenes(ref ecb, chunkIndex, seeker);
         }
+    }
+
+    private void Init(ref EntityCommandBuffer.ParallelWriter ecb, int chunkIndex, Entity seeker)
+    {
+        ecb.SetComponent(chunkIndex, seeker, translation.ValueRO);
+
+        ecb.SetComponent(chunkIndex, seeker, new InactiveState
+        {
+            duration = reproductionData.ValueRO.inactiveStateDuration
+        });
     }
 
     private void InheritGenes(ref EntityCommandBuffer.ParallelWriter ecb, int chunkIndex, Entity seeker)
     {
-        ecb.SetComponent(chunkIndex, seeker, translation.ValueRO);
-
         var newPhysicsData = physicsData.ValueRO;
         InheritPhysicsData(ref newPhysicsData);
         ecb.SetComponent(chunkIndex, seeker, newPhysicsData);
@@ -76,8 +87,9 @@ public readonly partial struct MutationAspect : IAspect
         InheritSteeringAgent(ref newSteeringAgent);
         ecb.SetComponent(chunkIndex, seeker, newSteeringAgent);
 
-        var seekerDatas = ecb.SetBuffer<TargetSeeker>(chunkIndex, seeker);
-        InheritSeeker(ref seekerDatas);
+        var newSeeker = targetSeeker.ValueRO;
+        InheritSeeker(ref newSeeker);
+        ecb.SetComponent(chunkIndex, seeker, newSeeker);
     }
 
     private void InheritPhysicsData(ref PhysicsData physicsData)
@@ -97,24 +109,13 @@ public readonly partial struct MutationAspect : IAspect
         }
     }
 
-    private void InheritSeeker(ref DynamicBuffer<TargetSeeker> seekerDatas)
+    private void InheritSeeker(ref TargetSeeker seeker)
     {
-        seekerDatas.CopyFrom(targetSeeker);
-        ref var seeker1 = ref seekerDatas.ElementAt(0);
-
-        seeker1.seekTimer = 0;
-        seeker1.timeBeforeSeek = 2;
-
         if (!MutationNeeded())
             return;
 
-        for (int i = 0; i < seekerDatas.Length; i++)
-        {
-            ref var seeker = ref seekerDatas.ElementAt(i);
-
-            seeker.searchRadius += mutationData.ValueRW.GetMutationAmount(MutationData.targetSearchRadius);
-            seeker.attractionForce += mutationData.ValueRW.GetMutationAmount(MutationData.attractionFroce);
-        }
+        seeker.searchRadius += mutationData.ValueRW.GetMutationAmount(MutationData.targetSearchRadius);
+        seeker.attractionForce += mutationData.ValueRW.GetMutationAmount(MutationData.attractionFroce);
     }
 
     private bool MutationNeeded()

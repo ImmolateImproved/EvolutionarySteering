@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 711113230}
   - component: {fileID: 711113231}
   m_Layer: 0
-  m_Name: PredatorSpawner
+  m_Name: SeekerSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,8 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positionFactory: {fileID: 1058882952687463801}
   spawnRequests:
-  - prefab: {fileID: 3661676212448671926, guid: 8faa2cb00448d3b41ba44fc260c1f61a, type: 3}
-    count: 3
+  - prefab: {fileID: 9219223577364271417, guid: b51660efc5ae58440938ebb91fc35643, type: 3}
+    count: 1
+  - prefab: {fileID: 4894523277675957873, guid: b4cdd68ac3f948e4a8f86f8bd3f3871c, type: 3}
+    count: 1
   timeBetweenSpawns: 0
 --- !u!1 &1058882951435089219
 GameObject:
@@ -65,7 +67,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1058882951435089217
 Transform:
   m_ObjectHideFlags: 0
@@ -96,93 +98,10 @@ MonoBehaviour:
   positionFactory: {fileID: 1058882952687463801}
   spawnRequests:
   - prefab: {fileID: 2943935801606489530, guid: 6d147390a7ace54489ddde001c85a391, type: 3}
-    count: 100
-  - prefab: {fileID: 2140678988757800765, guid: 4ace277525b03a54c8e6bd081f7935c5, type: 3}
-    count: 1
-  timeBetweenSpawns: 1
---- !u!1 &1058882951633410770
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1058882951633410769}
-  - component: {fileID: 1058882951633410768}
-  - component: {fileID: 1058882951633410783}
-  m_Layer: 0
-  m_Name: HerbivorousSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!4 &1058882951633410769
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1058882951633410770}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1058882952687463800}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1058882951633410768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1058882951633410770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d218e41b4ec2b694b94c591695e9418d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  positionFactory: {fileID: 1058882952687463801}
-  spawnRequests:
-  - prefab: {fileID: 3661676212448671926, guid: b456c945924d8f34f8bbcc5650295514, type: 3}
     count: 25
-  timeBetweenSpawns: 0
---- !u!114 &1058882951633410783
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1058882951633410770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e9d27629fa198544bf54a7bea0897f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mutationData:
-    attarctionFroce:
-      min: 0.8
-      max: 1.2
-    repultionForce:
-      min: -1.2
-      max: -0.8
-    maxSpeed:
-      min: 10
-      max: 20
-    maxForce:
-      min: 0.1
-      max: 0.5
-    foodSearchRadius:
-      min: 10
-      max: 30
-    poisonSearchRadius:
-      min: 3
-      max: 7
-    random:
-      state: 164334264
+  - prefab: {fileID: 2140678988757800765, guid: 4ace277525b03a54c8e6bd081f7935c5, type: 3}
+    count: 0
+  timeBetweenSpawns: 5
 --- !u!1 &1058882951797723171
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,9 +149,9 @@ MonoBehaviour:
   positionFactory: {fileID: 1058882952687463801}
   spawnRequests:
   - prefab: {fileID: 2943935801606489530, guid: 6d147390a7ace54489ddde001c85a391, type: 3}
-    count: 500
+    count: 11
   - prefab: {fileID: 2140678988757800765, guid: 4ace277525b03a54c8e6bd081f7935c5, type: 3}
-    count: 1
+    count: 0
   timeBetweenSpawns: 0
 --- !u!1 &1058882952473024206
 GameObject:
@@ -315,7 +234,6 @@ Transform:
   - {fileID: 1058882952473024204}
   - {fileID: 1058882951797723169}
   - {fileID: 1058882951435089217}
-  - {fileID: 1058882951633410769}
   - {fileID: 711113230}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -333,5 +251,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   factoryType: 0
-  bounds: {x: 55, y: 0, z: 25}
+  bounds: {x: 11, y: 0, z: 11}
   maxRadius: 50

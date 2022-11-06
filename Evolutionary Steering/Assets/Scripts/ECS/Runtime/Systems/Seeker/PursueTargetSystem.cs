@@ -5,7 +5,8 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 [BurstCompile]
-[UpdateBefore(typeof(RotateTowardsVelocitySystem))]
+[UpdateBefore(typeof(ApplyForceSystem))]
+[UpdateAfter(typeof(FindTargetSystem))]
 public partial struct PursueTargetSystem : ISystem
 {
     public void OnCreate(ref SystemState state)
@@ -33,6 +34,7 @@ public partial struct PursueTargetSystem : ISystem
     }
 
     [BurstCompile]
+    [WithNone(typeof(InactiveState))]
     partial struct SteeringJob : IJobEntity
     {
         [ReadOnly]
@@ -41,27 +43,20 @@ public partial struct PursueTargetSystem : ISystem
         [ReadOnly]
         public ComponentLookup<Rotation> targetRotations;
 
-        public void Execute(SteeringAgentAspect steeringAspect, in Health health, in DynamicBuffer<TargetSeeker> seeker)
+        public void Execute(SteeringAgentAspect steeringAspect, in Energy health, in TargetSeeker seeker)
         {
-            var seekerArray = seeker.AsNativeArray();
+            if (!targetTranslations.HasComponent(seeker.target))
+                return;
 
-            for (int i = 0; i < seekerArray.Length; i++)
-            {
-                var seekerData = seekerArray[i];
+            var targetDirection = math.mul(targetRotations[seeker.target].Value, new float3(1, 0, 0));
+            var targetPos = targetTranslations[seeker.target].Value;
+            targetPos += targetDirection * seeker.predictionAmount;
 
-                if (!targetTranslations.HasComponent(seekerData.target))
-                    continue;
+            var missingHpFraction = 1f - (health.current / health.max);
 
-                var targetDirection = math.mul(targetRotations[seekerData.target].Value, new float3(1, 0, 0));
-                var targetPos = targetTranslations[seekerData.target].Value;
-                targetPos += targetDirection * seekerData.predictionAmount;
+            var attractionForce = seeker.attractionForce + (missingHpFraction * seeker.hungerAttractionBonus);
 
-                var missingHpFraction = 1f - (health.current / health.max);
-
-                var attractionForce = seekerData.attractionForce + (missingHpFraction * seekerData.hungerAttractionBonus);
-
-                steeringAspect.Steer(attractionForce, targetPos);
-            }
+            steeringAspect.Steer(attractionForce, targetPos);
         }
     }
 }

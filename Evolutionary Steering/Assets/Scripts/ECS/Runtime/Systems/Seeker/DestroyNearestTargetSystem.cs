@@ -26,12 +26,14 @@ public partial struct DestroyNearestTargetSystem : ISystem
 
         var translationLookup = SystemAPI.GetComponentLookup<Translation>(true);
         var targetInRangeLookup = SystemAPI.GetComponentLookup<TargetInRange>();
+        var energyLookup = SystemAPI.GetComponentLookup<Energy>(true);
 
         state.Dependency = new DestroyNearestTargetJob
         {
             ecb = ecb.AsParallelWriter(),
             translationLookup = translationLookup,
-            targetInRangeLookup = targetInRangeLookup
+            targetInRangeLookup = targetInRangeLookup,
+            energyLookup = energyLookup
 
         }.ScheduleParallel(state.Dependency);
     }
@@ -46,32 +48,30 @@ public partial struct DestroyNearestTargetSystem : ISystem
         [NativeDisableParallelForRestriction]
         public ComponentLookup<TargetInRange> targetInRangeLookup;
 
+        [ReadOnly]
+        public ComponentLookup<Energy> energyLookup;
+
         public EntityCommandBuffer.ParallelWriter ecb;
 
-        public void Execute(Entity e, [ChunkIndexInQuery] int chunkIndex, in Translation translation, in DynamicBuffer<TargetSeeker> targetSeeker)
+        public void Execute(Entity e, [ChunkIndexInQuery] int chunkIndex, in Translation translation, in TargetSeeker targetSeeker, in Energy energy)
         {
             targetInRangeLookup.SetComponentEnabled(e, false);
 
-            for (int i = 0; i < targetSeeker.Length; i++)
+            var target = targetSeeker.target;
+
+            if (!translationLookup.HasComponent(target))
+                return;
+
+            var dist = math.distancesq(translation.Value, translationLookup[target].Value);
+
+            if (dist < 1)
             {
-                var target = targetSeeker[i].target;
+                targetInRangeLookup.SetComponentEnabled(e, true);
 
-                if (!translationLookup.HasComponent(target))
-                    continue;
-
-                var dist = math.distancesq(translation.Value, translationLookup[target].Value);
-
-                if (dist < 1)
-                {
-                    targetInRangeLookup.SetComponentEnabled(e, true);
-                    targetInRangeLookup[e] = new TargetInRange
-                    {
-                        targetType = targetSeeker[i].targetType
-                    };
-
+                if (energy.current >= energyLookup[targetSeeker.target].current)
                     ecb.DestroyEntity(chunkIndex, target);
-                }
             }
+
         }
     }
 }

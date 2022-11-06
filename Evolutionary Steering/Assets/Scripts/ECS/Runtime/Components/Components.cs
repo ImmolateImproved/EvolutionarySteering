@@ -1,6 +1,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics;
 using UnityEngine;
 
 public struct MousePosition : IComponentData
@@ -14,15 +15,16 @@ public struct OutOfBoundSteering : IComponentData
     public float steeringForce;
 }
 
-public struct Health : IComponentData
+public struct Energy : IComponentData
 {
     public float max;
     public float current;
-    public float hpPerFood;
-    public float hpPerPoison;
     public float decreasePerSeconds;
 
+    public float foodDigestion;
+
     public Color fullHpColor;
+    public bool colorChange;
 }
 
 [System.Serializable]
@@ -58,4 +60,19 @@ public struct CameraFollow : IComponentData
     {
         return math.remap(fromRange.min, fromRange.max, scrollSpeedRange.min, scrollSpeedRange.max, x);
     }
+}
+
+public struct Selector : IComponentData
+{
+    public CollisionFilter layers;
+}
+
+public struct SelectorInit : IComponentData
+{
+    
+}
+
+public struct Selected : IComponentData
+{
+    
 }

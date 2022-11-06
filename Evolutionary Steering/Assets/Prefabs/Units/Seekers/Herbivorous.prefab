@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1512788857821333850
+--- !u!1001 &6475930598986227925
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -9,16 +9,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2373885374998242938, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
-      propertyPath: seekerDatas.Array.data[1].targetLayer.Category03
-      value: 0
+      propertyPath: seekerData.unitType
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2373885374998242938, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
+      propertyPath: seekerData.foodPreference
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 2751244647477817836, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
       propertyPath: m_Name
       value: Herbivorous
       objectReference: {fileID: 0}
-    - target: {fileID: 5032751289064389116, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
-      propertyPath: foodToReproduce
-      value: 15
+    - target: {fileID: 3094297773808610881, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
+      propertyPath: overrideList.Array.data[0].value.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3094297773808610881, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
+      propertyPath: overrideList.Array.data[0].value.y
+      value: 0.50425243
+      objectReference: {fileID: 0}
+    - target: {fileID: 3094297773808610881, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
+      propertyPath: overrideList.Array.data[0].value.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5981704220167515947, guid: 4bf6a0d725f51a74098f8eb65722b17d, type: 3}
       propertyPath: m_RootOrder

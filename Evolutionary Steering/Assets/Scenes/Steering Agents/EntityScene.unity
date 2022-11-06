@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitPrefabs:
-  - {fileID: 3661676212448671926, guid: b456c945924d8f34f8bbcc5650295514, type: 3}
-  - {fileID: 3661676212448671926, guid: 8faa2cb00448d3b41ba44fc260c1f61a, type: 3}
+  - {fileID: 9219223577364271417, guid: b51660efc5ae58440938ebb91fc35643, type: 3}
+  - {fileID: 4894523277675957873, guid: b4cdd68ac3f948e4a8f86f8bd3f3871c, type: 3}
 --- !u!4 &848843923
 Transform:
   m_ObjectHideFlags: 0
@@ -170,7 +170,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1231101802
+--- !u!1001 &1069661200
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -222,17 +222,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1155442436458520180, guid: 2fbb66f186386dc41a0768c8bc8748cd, type: 3}
-      propertyPath: initEnableState
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1155442436458520181, guid: 2fbb66f186386dc41a0768c8bc8748cd, type: 3}
       propertyPath: m_Name
       value: CameraFollow
-      objectReference: {fileID: 0}
-    - target: {fileID: 1155442436458520181, guid: 2fbb66f186386dc41a0768c8bc8748cd, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -247,18 +239,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 711113231, guid: e336f8ef4e3971f4b8918f21aca8cb20, type: 3}
-      propertyPath: spawnRequests.Array.data[0].count
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 1058882951435089218, guid: e336f8ef4e3971f4b8918f21aca8cb20, type: 3}
-      propertyPath: spawnRequests.Array.data[0].count
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 1058882951797723170, guid: e336f8ef4e3971f4b8918f21aca8cb20, type: 3}
-      propertyPath: spawnRequests.Array.data[0].count
-      value: 1000
-      objectReference: {fileID: 0}
     - target: {fileID: 1058882952687463800, guid: e336f8ef4e3971f4b8918f21aca8cb20, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -302,14 +282,6 @@ PrefabInstance:
     - target: {fileID: 1058882952687463800, guid: e336f8ef4e3971f4b8918f21aca8cb20, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1058882952687463801, guid: e336f8ef4e3971f4b8918f21aca8cb20, type: 3}
-      propertyPath: bounds.x
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 1058882952687463801, guid: e336f8ef4e3971f4b8918f21aca8cb20, type: 3}
-      propertyPath: bounds.z
-      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1058882952687463802, guid: e336f8ef4e3971f4b8918f21aca8cb20, type: 3}
       propertyPath: m_Name

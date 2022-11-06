@@ -3,10 +3,9 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
-using Unity.Transforms;
+using Unity.Physics.Aspects;
 
 [BurstCompile]
-[UpdateBefore(typeof(PursueTargetSystem))]
 public partial struct FindTargetSystem : ISystem
 {
     public void OnCreate(ref SystemState state)
@@ -22,66 +21,105 @@ public partial struct FindTargetSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+        var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
+        var unitTypeLookup = SystemAPI.GetComponentLookup<UnitType>(true);
+        var inactiveStateLookup = SystemAPI.GetComponentLookup<InactiveState>(true);
+
+        var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+        var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
+
         var dt = SystemAPI.Time.DeltaTime;
 
-        var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
+        new InactiveStateJob
+        {
+            dt = dt,
+            ecb = ecb
+
+        }.Schedule();
 
         new FindTargetJob
         {
-            dt = dt,
-            physicsWorld = physicsWorld
+            physicsWorld = physicsWorld,
+            unitTypeLookup = unitTypeLookup,
+            inactiveStateLookup = inactiveStateLookup
 
         }.ScheduleParallel();
-
-        #region OldFindTarget
-        //var targetsQuery = SystemAPI.QueryBuilder().WithAll<Translation, TargetType>().Build();
-
-        //var targetEntities = targetsQuery.ToEntityArray(Allocator.TempJob);
-        //var targetPositions = targetsQuery.ToComponentDataArray<Translation>(Allocator.TempJob);
-        //var targetTypes = targetsQuery.ToComponentDataArray<TargetType>(Allocator.TempJob);
-
-        //state.Dependency = new FindTargetByCheckingDistanceJob
-        //{
-        //    targetEntities = targetEntities,
-        //    targetPositions = targetPositions,
-        //    targetTypes = targetTypes,
-        //    dt = dt
-
-        //}.ScheduleParallel(state.Dependency);
-        #endregion
     }
 
     [BurstCompile]
+    partial struct InactiveStateJob : IJobEntity
+    {
+        public EntityCommandBuffer ecb;
+
+        public float dt;
+
+        public void Execute(Entity e, ref InactiveState inactiveState)
+        {
+            inactiveState.timer += dt;
+
+            if (inactiveState.timer >= inactiveState.duration)
+            {
+                ecb.RemoveComponent<InactiveState>(e);
+            }
+        }
+    }
+
+    [BurstCompile]
+    [WithNone(typeof(InactiveState))]
     partial struct FindTargetJob : IJobEntity
     {
         [ReadOnly]
         public PhysicsWorldSingleton physicsWorld;
 
-        public float dt;
+        [ReadOnly]
+        public ComponentLookup<UnitType> unitTypeLookup;
 
-        public void Execute(in Translation translation, ref DynamicBuffer<TargetSeeker> seekerBuffer)
+        [ReadOnly]
+        public ComponentLookup<InactiveState> inactiveStateLookup;
+
+        public void Execute(Entity e, in ColliderAspect colliderAspect, ref TargetSeeker seeker, ref DynamicBuffer<AllTargets> allTargets)
         {
-            for (int i = 0; i < seekerBuffer.Length; i++)
+            var distanceHits = new NativeList<DistanceHit>(Allocator.Temp);
+            physicsWorld.CalculateDistance(colliderAspect, seeker.searchRadius, ref distanceHits);
+
+            allTargets.Clear();
+
+            var target = Entity.Null;
+            var foodType = 0f;
+            var priority = math.INFINITY;
+
+            for (int j = 0; j < distanceHits.Length; j++)
             {
-                ref var seeker = ref seekerBuffer.ElementAt(i);
+                var distanceHit = distanceHits[j];
 
-                var input = new PointDistanceInput
+                var ignoreUnit = distanceHit.Entity == e
+                    || inactiveStateLookup.HasComponent(distanceHit.Entity)
+                    || !unitTypeLookup.HasComponent(distanceHit.Entity);
+
+                if (ignoreUnit)
+                    continue;
+
+                var currentFoodType = unitTypeLookup[distanceHit.Entity].value;
+                var currentFoodDifference = math.abs(seeker.foodPreference - currentFoodType);
+
+                var currentPriority = currentFoodDifference + distanceHit.Distance;
+
+                if (currentPriority <= priority)
                 {
-                    Filter = seeker.layers,
-                    MaxDistance = seeker.searchRadius,
-                    Position = translation.Value
-                };
-
-                seeker.seekTimer += dt;
-                if (seeker.seekTimer >= seeker.timeBeforeSeek)
-                {
-                    physicsWorld.CalculateDistance(input, out var closest);
-
-                    seekerBuffer.ElementAt(i).target = closest.Entity;
+                    target = distanceHit.Entity;
+                    foodType = currentFoodType;
+                    priority = currentPriority;
                 }
+
+                allTargets.Add(new AllTargets { targetType = currentFoodType });
             }
+
+            seeker.targetCount = distanceHits.Length;
+            seeker.targetType = foodType;
+            seeker.target = target;
         }
     }
+
     private struct IngnoreSelfCollector : ICollector<DistanceHit>
     {
         public bool EarlyOutOnFirstHit => false;
@@ -117,58 +155,4 @@ public partial struct FindTargetSystem : ISystem
             return true;
         }
     }
-    //[BurstCompile]
-    //partial struct FindTargetByCheckingDistanceJob : IJobEntity
-    //{
-    //    [ReadOnly]
-    //    [DeallocateOnJobCompletion]
-    //    public NativeArray<Entity> targetEntities;
-
-    //    [ReadOnly]
-    //    [DeallocateOnJobCompletion]
-    //    public NativeArray<Translation> targetPositions;
-
-    //    [ReadOnly]
-    //    [DeallocateOnJobCompletion]
-    //    public NativeArray<TargetType> targetTypes;
-
-    //    public float dt;
-
-    //    public void Execute(in TransformAspect transform, ref DynamicBuffer<TargetSeeker> seekerBuffer)
-    //    {
-    //        var distances = new NativeArray<float>(seekerBuffer.Length, Allocator.Temp);
-
-    //        for (int i = 0; i < distances.Length; i++)
-    //        {
-    //            distances[i] = math.INFINITY;
-    //        }
-
-    //        var newTargetEntity = new NativeArray<Entity>(seekerBuffer.Length, Allocator.Temp);
-
-    //        for (int i = 0; i < targetEntities.Length; i++)
-    //        {
-    //            var targetTypeIndex = (int)targetTypes[i].value;
-
-    //            var newDistance = math.distance(transform.Position, targetPositions[i].Value);
-
-    //            if (newDistance < seekerBuffer[targetTypeIndex].searchRadius && newDistance < distances[targetTypeIndex])
-    //            {
-    //                distances[targetTypeIndex] = newDistance;
-
-    //                newTargetEntity[targetTypeIndex] = targetEntities[i];
-    //            }
-    //        }
-
-    //        for (int i = 0; i < seekerBuffer.Length; i++)
-    //        {
-    //            ref var seeker = ref seekerBuffer.ElementAt(i);
-
-    //            seeker.seekTimer += dt;
-    //            if (seeker.seekTimer >= seeker.timeBeforeSeek)
-    //            {
-    //                seeker.target = newTargetEntity[i];
-    //            }
-    //        }
-    //    }
-    //}
 }

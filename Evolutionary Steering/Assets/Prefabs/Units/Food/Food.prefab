@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6771122621445135229}
-  - component: {fileID: 3657153790841745613}
   - component: {fileID: 6548513786848090848}
+  - component: {fileID: -5941661255663744494}
+  - component: {fileID: 8813942740217782524}
   m_Layer: 0
   m_Name: Food
   m_TagString: Untagged
@@ -34,19 +35,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3657153790841745613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2943935801606489530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66f369db5140bb74e9634cf6eecafeb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  unitType: 0
 --- !u!114 &6548513786848090848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,8 +98,8 @@ MonoBehaviour:
     m_BelongsToCategories:
       m_Override: 0
       m_Value:
-        Category00: 0
-        Category01: 1
+        Category00: 1
+        Category01: 0
         Category02: 0
         Category03: 0
         Category04: 0
@@ -190,6 +178,37 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
+--- !u!114 &-5941661255663744494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2943935801606489530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f369db5140bb74e9634cf6eecafeb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitType: 50
+--- !u!114 &8813942740217782524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2943935801606489530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e385bf092ca49ef47a12e25acab13cea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxEnergy: 25
+  startEnergy: 25
+  decreasePerSeconds: 0
+  foodDigestion: 0
+  fullHpColor: {r: 1, g: 1, b: 1, a: 0}
+  colorChange: 0
 --- !u!1001 &2234726236701370406
 PrefabInstance:
   m_ObjectHideFlags: 0

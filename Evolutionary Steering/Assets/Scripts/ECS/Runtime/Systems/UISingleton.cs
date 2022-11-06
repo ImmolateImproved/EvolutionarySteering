@@ -13,6 +13,10 @@ public class UISingleton : MonoBehaviour
     public TextMeshProUGUI maxFroce;
     public TextMeshProUGUI maxSpeed;
 
+    public TextMeshProUGUI energy;
+    public TextMeshProUGUI foodPref;
+    public TextMeshProUGUI target;
+
     private void Awake()
     {
         singleton = this;
@@ -30,5 +34,12 @@ public class UISingleton : MonoBehaviour
 
         maxFroce.text = averageDNAStats.maxFroce.ToString();
         maxSpeed.text = averageDNAStats.maxSpeed.ToString();
+    }
+
+    public void SetUnitDebugInfo(ref UnitInfo unitInfo)
+    {
+        energy.text = unitInfo.energy.ToString();
+        foodPref.text = unitInfo.foodPref.ToString();
+        target.text = unitInfo.target.ToString();
     }
 }

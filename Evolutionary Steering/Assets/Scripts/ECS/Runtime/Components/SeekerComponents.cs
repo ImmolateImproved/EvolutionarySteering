@@ -44,25 +44,27 @@ public struct InitialSeekerStats : IComponentData
     }
 }
 
-[InternalBufferCapacity(0)]
-public struct TargetSeeker : IBufferElementData
+public struct TargetSeeker : IComponentData
 {
     public Entity target;
 
     public float attractionForce;
     public float hungerAttractionBonus;
 
+    public float foodPreference;
+
     public float predictionAmount;
 
     public float searchRadius;
 
-    public float seekTimer;
-    public float timeBeforeSeek;
-
-    public TargetTypeEnum targetType;
-    public CollisionFilter layers;
+    public float targetType;
+    public int targetCount;
 }
 
+public struct AllTargets : IBufferElementData
+{
+    public float targetType;
+}
 public enum TargetTypeEnum
 {
     Food, Poison
@@ -70,10 +72,10 @@ public enum TargetTypeEnum
 
 public struct UnitType : IComponentData
 {
-    public TargetTypeEnum value;
+    public float value;
 }
 
 public struct TargetInRange : IComponentData, IEnableableComponent
 {
-    public TargetTypeEnum targetType;
+
 }

@@ -28,6 +28,7 @@ public partial struct ApplyForceSystem : ISystem
     }
 
     [BurstCompile]
+    [WithNone(typeof(InactiveState))]
     partial struct ApplyForceJob : IJobEntity
     {
         public float dt;

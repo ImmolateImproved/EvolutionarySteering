@@ -1,6 +1,8 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
+using Random = Unity.Mathematics.Random;
+
 [System.Serializable]
 public struct SpawnRequestData
 {
@@ -23,7 +25,7 @@ public class SpawnerAuthoring : MonoBehaviour
             DependsOn(authoring.positionFactory);
             DependsOn(authoring.transform);
 
-            var random = new Unity.Mathematics.Random((uint)(System.DateTime.Now.Millisecond + authoring.GetInstanceID()));
+            var random = Random.CreateFromIndex((uint)(System.DateTime.Now.Millisecond + authoring.GetInstanceID()));
 
             var positionFactory = authoring.positionFactory;
 

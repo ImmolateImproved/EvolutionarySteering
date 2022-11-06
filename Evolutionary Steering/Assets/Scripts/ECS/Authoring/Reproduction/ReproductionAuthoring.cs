@@ -13,6 +13,8 @@ public class ReproductionAuthoring : MonoBehaviour
     public float maxFroce;
     public float targetSearchRadius;
 
+    public float inactiveStateDuration;
+
     class ReproductionBaker : Baker<ReproductionAuthoring>
     {
         public override void Bake(ReproductionAuthoring authoring)
@@ -20,7 +22,8 @@ public class ReproductionAuthoring : MonoBehaviour
             AddComponent(new ReproductionData
             {
                 prefabIndex = authoring.prefabIndex,
-                foodToReproduce = authoring.foodToReproduce
+                energyToReproduce = authoring.foodToReproduce,
+                inactiveStateDuration = authoring.inactiveStateDuration
             });
 
             AddComponent(new MutationData
